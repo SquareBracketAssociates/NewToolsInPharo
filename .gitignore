@@ -1,3 +1,4 @@
+_result/*
 **/*.aux 
 **/*.DS_Store
 **/*.out

@@ -23,7 +23,7 @@ Submission process:
 	- citation of scientific articles should be expressed using the microdown citation e.g. `<!citation|key=Duca99a!>`,
 	- have been spellchecked with a system such as grammarly,
 	- each chapter should contain a bibfile having the same name than the main.md file,
-	- each chapter should contain a folder named figures that contains the figures of the chapter.
+	- each chapter should contain a folder named 'figures' that contains the figures of the chapter.
 	
 This book will be published via the book-on-demand program of http://bod.fr. 
 It will be published on the Bibliotheque Nationale de France and it will be available on most public platforms such as amazon.com.
@@ -31,7 +31,7 @@ It will be published on the Bibliotheque Nationale de France and it will be avai
 
 
 
-<!inputFile|path=Chapters/Sample/Sample1.md!>
+<!inputFile|path=Chapters/Sample1/Sample1.md!>
 
 
 
