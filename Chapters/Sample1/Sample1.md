@@ -1,9 +1,9 @@
 ## Handling Grabouzes with a Zerotroner
 @cha:grabouzes
 
-""Author: Prof. T. Tournesol
+_Authors:_ Prof. T. Tournesol -- Moulinsart Lab, Belgium -- tryphon.tournesol@moulinsart.be and Prof. H. Ochanomizu -- AstroLabs, Japan -- hiro.ochanomizu@astroLabs.jp
 
-##### Abstract:
+##### Abstract
 Grabouzes make development tedious and error prone. 
 In this article we present how our new Zerotroner handle grabouzes.
 We show the challenges posed by grabouzes, present our Zerotroners. 
@@ -13,13 +13,17 @@ excellent execution speed they also offer the possibility to implement efficient
 We finish the articles by showing some result we obtained while applying our Zerotroner
 to industrial code. 
 
-### Challenges raised by grabouzes.
+### Challenges raised by grabouzes
 
-As shown in Figure @*bluefig*@ ...
+As shown in Figure *@bluefig@*
 
-![Pharo logo is great](figures/pharo.png width=30&label=bluefig)
+![Pharo logo is great.](figures/pharo.png width=50&label=bluefig)
 
 ### Presentation
+
+Notice that 
+- section titles are not uppercased.
+- there is a period at the end of figure captions.
 
 ### Implementation insights
 
@@ -31,7 +35,7 @@ ZerotronerHandler >> depositron: aCol
 
 ### Anecdotal use and evidence
 
-As shown in <!citation|key=Tournesol2223!>
+As shown in <!cite|key=Tournesol2223!>
 
 
 ### Conclusion
