@@ -20,7 +20,7 @@ We expect the chapters to
 
 Submission process:
 	- a chapter should be written in microdown. Writers may want to clone the current repository and use Pillar (see https://github.com/pillar-markup/pillar and https://github.com/pillar-markup/microdown).
-	- citation of scientific articles should be expressed using the microdown citation e.g. `<!citation|key=Duca99a!>`,
+	- citation of scientific articles should be expressed using the microdown citation e.g. {!citation|ref=Blac09a!} using  `{!citation|ref=Blac09a!}`,
 	- have been spellchecked with a system such as grammarly,
 	- each chapter should contain a bibfile having the same name than the main.md file,
 	- each chapter should contain a folder named 'figures' that contains the figures of the chapter.
@@ -28,7 +28,7 @@ Submission process:
 This book will be published via the book-on-demand program of http://bod.fr. 
 It will be published on the Bibliotheque Nationale de France and it will be available on most public platforms such as amazon.com.
 
-
+%<!inputFile|path=Chapters/Sample1/Sample12.md!>
 
 
 <!inputFile|path=Chapters/Sample1/Sample1.md!>

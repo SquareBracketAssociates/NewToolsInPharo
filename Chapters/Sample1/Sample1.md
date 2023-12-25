@@ -35,7 +35,7 @@ ZerotronerHandler >> depositron: aCol
 
 ### Anecdotal use and evidence
 
-As shown in <!cite|key=Tournesol2223!>
+As shown in <!cite|ref=Tourn23!>
 
 
 ### Conclusion
