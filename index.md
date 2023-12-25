@@ -19,16 +19,25 @@ We expect the chapters to
 - evidence of use of the tools, 
 
 Submission process:
-	- a chapter should be written in microdown. Writers may want to clone the current repository and use Pillar (see https://github.com/pillar-markup/pillar and https://github.com/pillar-markup/microdown).
-	- citation of scientific articles should be expressed using the microdown citation e.g. {!citation|ref=Blac09a!} using  `{!citation|ref=Blac09a!}`,
-	- have been spellchecked with a system such as grammarly,
-	- each chapter should contain a bibfile having the same name than the main.md file,
-	- each chapter should contain a folder named 'figures' that contains the figures of the chapter.
+-  A chapter must be written in Microdown. Writers may want to clone the current repository and use Pillar (see [https://github.com/pillar-markup/pillar](https://github.com/pillar-markup/pillar) and [https://github.com/pillar-markup/microdown](https://github.com/pillar-markup/microdown)). The Sample1 folder in the Chapters folder contains a sample chapter. 
+- The authors should send an email to stephane.ducasse@inria.fr and goca@dmi.uns.ac.rs
+- The authors should then do a PR to this repository with their chapter containing all their files.
+- Citations should be expressed using the microdown citation  e.g. {!citation|ref=Blac09a!} using `{!citation|ref=Blac09a!}`,
+- A chapter must be spellchecked with a system such as grammarly,
+- if needed, each chapter should contain a bibfile having the same name than the main folder file,
+- if needed each chapter should contain a folder named 'figures' that contains the figures of the chapter.
+	
+The Sample1 folder illustrates this structure, it contains:
+- `Sample1.bib`
+- `Sample1.md`
+- `figures/pharo.png`
+- `figures/rmod.png`
+
 	
 This book will be published via the book-on-demand program of [http://bod.fr](http://bod.fr). 
 It will be published on the Bibliotheque Nationale de France and it will be available on most public platforms such as amazon.com.
 
-%<!inputFile|path=Chapters/Sample1/Sample12.md!>
+S. Ducasse and T. Rakic
 
 
 <!inputFile|path=Chapters/Sample1/Sample1.md!>
