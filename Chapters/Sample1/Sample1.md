@@ -35,10 +35,10 @@ ZerotronerHandler >> depositron: aCol
 
 ### Anecdotal use and evidence
 
-As shown in <!cite|ref=Tourn23!>
+As shown in {!citation|ref=Tourn23a!}, our zerotoner can handle grabouzes.
 
 
 ### Conclusion
 
-While Pharo is a great language and IDE <!citation|key=Blac09a!>, it does not handle well grabouzes. 
-In this chapter we presented how a simple Zerotroner can dramatically improve the situation.
+While Pharo is a great language and IDE {!citation|ref=Blac09a!}, it does not handle well grabouzes. 
+In this chapter, we presented how a simple Zerotroner can dramatically improve the situation.

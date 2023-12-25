@@ -25,7 +25,7 @@ Submission process:
 	- each chapter should contain a bibfile having the same name than the main.md file,
 	- each chapter should contain a folder named 'figures' that contains the figures of the chapter.
 	
-This book will be published via the book-on-demand program of http://bod.fr. 
+This book will be published via the book-on-demand program of [http://bod.fr](http://bod.fr). 
 It will be published on the Bibliotheque Nationale de France and it will be available on most public platforms such as amazon.com.
 
 %<!inputFile|path=Chapters/Sample1/Sample12.md!>
