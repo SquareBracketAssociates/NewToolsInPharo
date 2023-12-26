@@ -3,10 +3,10 @@ We are looking for contributions to new tools in the Pharo ecosystem.
 Here is a non-exhaustive list of possible tools we have in mind. 
 
 - Development tools such as refactoring, memory usage, and new approaches to debugging
-- Development tools such as UI builders, 
+- Development tools such as UI builders
 - Development tools to develop compilers
-- Tools for modeling such as Cormas, Moose, 
-- Libraries such
+- Tools for modeling such as Cormas, Moose
+- Libraries as basis for advanced tools
 
 Each chapter will be reviewed by three reviewers.
 
