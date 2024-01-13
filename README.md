@@ -17,8 +17,8 @@ We expect the chapters to
 - evidence of use of the tools, 
 
 Submission process:
-- Important Date: the final deadline is 15th of June but you can send chapter and we will review them and accept them as they are submitted.
-- Please send an email to stephane.ducasse@inria.fr with [New Tools In Pharo] in the header to mention your intention to propose a chapter.
+- __Important Date__: the final deadline is 15th of June but you can send chapter and we will review them and accept them as they are submitted.
+- Send an email to stephane.ducasse@inria.fr with [New Tools In Pharo] in the header to mention your intention to propose a chapter.
 -  A chapter must be written in Microdown. Writers may want to clone the current repository and use Pillar (see [https://github.com/pillar-markup/pillar](https://github.com/pillar-markup/pillar) and [https://github.com/pillar-markup/microdown](https://github.com/pillar-markup/microdown)). The Sample1 folder in the Chapters folder contains a sample chapter.
 - The authors should send an email to stephane.ducasse@inria.fr, goca@dmi.uns.ac.rs, and juanpablo.sandoval@uc.cl.
 - The authors should then do a PR to this repository with their chapter containing all their files.
