@@ -4,7 +4,7 @@ _result/*
 **/*.out
 **/*.log
 **/*.synctex.gz
-*.pdf
+# *.pdf
 **/*.blg
 
 journal.pdf
@@ -32,8 +32,8 @@ journal.pdf
 # *.eps
 # *.pdf
 
-.pdf
-src/*.pdf
+# .pdf
+# src/*.pdf
 
 ## Bibliography auxiliary files (bibtex/biblatex/biber):
 #*.bbl

@@ -15,7 +15,7 @@ We discuss some aspects of MoTion's implementation and illustrate its use with r
 
 ### Introduction
 
-The evolution of software engineering increasingly implies the need to search through data in memory and extract specific information in various domains, including ''reverse engineering'' {!citation|ref=Gall95c!}, ''analysis'' {!citation|ref=Thak17a!} and ''model transformation'' {!citation|ref=Klin11a!}.
+The evolution of software engineering increasingly implies the need to search through data in memory and extract specific information in various domains, including _reverse engineering_ {!citation|ref=Gall95c!}, _analysis_ {!citation|ref=Thak17a!} and _model transformation_ {!citation|ref=Klin11a!}.
 There are various techniques to help express precisely and succinctly what is searched and to perform the search after that.
 Pattern matching is the process of checking whether a given pattern matches a given value or not {!citation|ref=Klin11a!}.
 This technique can be used for ensuring that data has the right "shape", but also to search for and extract information from data.
@@ -25,14 +25,14 @@ Graph pattern matching languages proved to be able to deal with a large variety 
 They are famous for being able to express patterns in a declarative way and for enabling path traversals of nodes and edges deeply inside any graph {!citation|ref=Thak17a!}.
 To simplify and make the pattern more declarative, some features are often implemented in graph pattern matching language, for example:
 
--   ''Non-linear patterns'' allow developers to relate to found information many times in the same pattern, ensuring that a piece of data is actually in several places {!citation|ref=Egi22a!} (''e.g.,'' the `name` of a component must be the same as the name of one of its sub-components).
+-   _Non-linear patterns_ allow developers to relate to found information many times in the same pattern, ensuring that a piece of data is actually in several places {!citation|ref=Egi22a!} (_e.g.,_ the `name` of a component must be the same as the name of one of its sub-components).
 
--   ''Complex list patterns'' represent optional or repeated entities and allow developers to express a pattern over the shape of a list (''e.g.,'' ensuring that the last element is a specific value) {!citation|ref=Bast15a!}
+-   _Complex list patterns_ represent optional or repeated entities and allow developers to express a pattern over the shape of a list (_e.g.,_ ensuring that the last element is a specific value) {!citation|ref=Bast15a!}
 
--   ''Deep recursive patterns'' allow developers to consider that two pieces of data must be connected through one or many intermediate data, which is particularly handy when dealing with recursive data.
+-   _Deep recursive patterns_ allow developers to consider that two pieces of data must be connected through one or many intermediate data, which is particularly handy when dealing with recursive data.
 
 In Object-Oriented programming, objects are structured data that can be matched based on their type and/or field values.
-We refer to pattern matching in object-oriented languages as ''object pattern matching''.
+We refer to pattern matching in object-oriented languages as _object pattern matching_.
 Similarities exist conceptually between pattern matching in object-oriented languages and graphs, but they do not support the same set of features.
 More specifically, non-linear patterns, deep recursive patterns, and complex list patterns are currently not supported natively by pattern matching in object-oriented languages.
 In this chapter we report on our efforts to implement a pattern matching extension to the Pharo programming language that supports all these features.
@@ -161,8 +161,8 @@ Gremlin is considered a graph traversal language, allowing the exploration of co
  
 A Gremlin traversal is a sequential movement through the steps, which are represented by nodes and edges in a data graph. 
 It initiates from all nodes in the graph and traverses the path until the endpoint predefined by the developer is reached successfully among the graph.
-Listing *@gremlinRecursive@* is a recursive traversal expressed in Gremlin that consists of selecting 5 persons named ''marko''. In line 1 `g.V()` is the starting point of the traversal where `g` refers to the target graph of the match and `V()` denotes all nodes selection of `g`.
-Then, `.has("name", "marko")` filters the nodes to only those for which the property `name` is equal to ''marko''. 
+Listing *@gremlinRecursive@* is a recursive traversal expressed in Gremlin that consists of selecting 5 persons named _marko_. In line 1 `g.V()` is the starting point of the traversal where `g` refers to the target graph of the match and `V()` denotes all nodes selection of `g`.
+Then, `.has("name", "marko")` filters the nodes to only those for which the property `name` is equal to _marko_. 
 In line 2, `repeat(out())` will repeat the previous match to get all possible results. 
 Then `.times(5)` limits the repetition to 5 occurrences. And finally for line 3, `values("name")` property of value name is retrieved after moving recursively five steps forward.
 
@@ -179,7 +179,7 @@ Then `.times(5)` limits the repetition to 5 occurrences. And finally for line 3,
 Pattern matching is one of the main features of functional programming languages {!citation|ref=Ryu10a!} like *Haskell>https://www.haskell.org/tutorial/patterns.html*. With the evolution of object-oriented programming, pattern matching has increasingly found its way into this paradigm {!citation|ref=Kohn20a!}. 
 General Purpose Languages now have pattern matching capabilities like Java, which implemented pattern matching in the *Amber>https://openjdk.org/projects/amber/*  project; *Python>https://peps.python.org/pep-0000/*; or *Rust>https://doc.rust-lang.org/book/ch18-00-patterns.html*.
 
-Such languages involve matching objects based on their types and/or field values, and many of them introduced the conditional match like "`switch` ''subject'' `case` ''pattern''" in Java or Python.
+Such languages involve matching objects based on their types and/or field values, and many of them introduced the conditional match like "`switch` _subject_ `case` _pattern_" in Java or Python.
 
 ```language=Java&caption=Java Pattern Matching Example (Java 21)&label=javaExample
 record Point(int x, int y) { }
@@ -224,7 +224,7 @@ Line 4 is a variable that will hold a description of the type of `obj` (line 5)
 We found several libraries that complement programming languages by introducing pattern matching capabilities. 
 Tom {!citation|ref=Pier03a!} and Rascal {!citation|ref=Klin11a!} integrate with Java, and Kiama {!citation|ref=Sloa09a!} integrates
 with Scala. 
-Tom and Rascal cover features that were not covered natively by Java like ''Path traversal'', ''Recursive traversal'', ''Object matching'' and ''Complex lists''. Kiama and Rascal enable transformation through the definition of strategies. These strategies employ pattern matching to identify the terms requiring transformation. 
+Tom and Rascal cover features that were not covered natively by Java like _Path traversal_, _Recursive traversal_, _Object matching_ and _Complex lists_. Kiama and Rascal enable transformation through the definition of strategies. These strategies employ pattern matching to identify the terms requiring transformation. 
 Strategy execution in Kiama can proceed in different directions either top-down or bottom-up. 
 This capability opens up the possibility of traversal in various directions, but it still requires additional investigation concerning its relevance in pattern matching.
 
@@ -238,35 +238,35 @@ To reach a stage where developers are able to express any pattern compatible wit
 Previously in the literature, some authors have listed features supported by Rascal or Python {!citation|ref=Klin11a!} {!citation|ref=Kohn20a!}.
 
 We first consider features found in graph pattern matching. 
-''Graph matching'' is famous for specifying patterns similarly to database SQL queries.
+_Graph matching_ is famous for specifying patterns similarly to database SQL queries.
 
-- ''Declarative patterns'': help the developers define specific patterns that look like the results of matching, without caring about how these patterns will be matched. Using this paradigm leads to reduced development's time, increased maintainability, quick learning for pattern expression, and live preview changes without impacting the whole analysis process {!citation|ref=Imbu21a!}. We oppose it to ''Imperative paradigm'' which consists of defining the computational steps to complete a task (the matching process).
+- _Declarative patterns_: help the developers define specific patterns that look like the results of matching, without caring about how these patterns will be matched. Using this paradigm leads to reduced development's time, increased maintainability, quick learning for pattern expression, and live preview changes without impacting the whole analysis process {!citation|ref=Imbu21a!}. We oppose it to _Imperative paradigm_ which consists of defining the computational steps to complete a task (the matching process).
 
-- ''Path traversal'': refers to visiting elements (i.e. nodes and edges) in a graph in some algorithmic fashion {!citation|ref=Rodr12a!}. It helps the developers traverse nested structures while matching patterns.
+- _Path traversal_: refers to visiting elements (i.e. nodes and edges) in a graph in some algorithmic fashion {!citation|ref=Rodr12a!}. It helps the developers traverse nested structures while matching patterns.
 
-- ''Recursive traversal'': is needed to apply recursive search over deep structures, especially when developers ignore the depth of elements being searched for.
+- _Recursive traversal_: is needed to apply recursive search over deep structures, especially when developers ignore the depth of elements being searched for.
 
-- ''Repeated search'': is a feature related to the number of returned matches, where some languages can repeat the search to find all possible matches found, while others stop searching after finding the first match. A more flexible solution offers to specify the maximum number of matches that are expected, allowing to repeat the search without incurring the risk of infinite loops.
+- _Repeated search_: is a feature related to the number of returned matches, where some languages can repeat the search to find all possible matches found, while others stop searching after finding the first match. A more flexible solution offers to specify the maximum number of matches that are expected, allowing to repeat the search without incurring the risk of infinite loops.
 
 We now consider additional features of object matching. 
-Some of these features would not make sense in graph patterns (such as ''object matching''). 
+Some of these features would not make sense in graph patterns (such as _object matching_). 
 We also add here some features that are inspired by pattern matching in functional languages such as non-linear patterns:
 
-- ''Object matching'': is dedicated to match objects based on their types and properties, which can be methods with return values or instance variables.
+- _Object matching_: is dedicated to match objects based on their types and properties, which can be methods with return values or instance variables.
 
-- ''Literals'': (strings, numbers, integers) simply match themselves. They can be used to specify the value of an object's property.
+- _Literals_: (strings, numbers, integers) simply match themselves. They can be used to specify the value of an object's property.
 
-- ''Non-Linear pattern'': (sometimes called ''unification'') allows the developers to use the same variable multiple times that should always match the same value in the pattern.
+- _Non-Linear pattern_: (sometimes called _unification_) allows the developers to use the same variable multiple times that should always match the same value in the pattern.
 
-- ''Wildcards'': represent a placeholder, an anonymous property that can be matched and is not used afterwards.
+- _Wildcards_: represent a placeholder, an anonymous property that can be matched and is not used afterwards.
 
-- ''Structural pattern'': allows sub-patterns definition inside a pattern.
+- _Structural pattern_: allows sub-patterns definition inside a pattern.
 
-- ''Complex lists'': supports the matching of a sequence of patterns taking into consideration their order. For example specifying that a pattern must be matched at the end of a list or in the middle,...
+- _Complex lists_: supports the matching of a sequence of patterns taking into consideration their order. For example specifying that a pattern must be matched at the end of a list or in the middle,...
 
-- ''Logical matcher'': allows the possibility of combining multiple patterns in a boolean expression.
+- _Logical matcher_: allows the possibility of combining multiple patterns in a boolean expression.
 
-- ''Negation'': may allow to express a simpler pattern when searching for bindings that do not conform to a particular criteria.
+- _Negation_: may allow to express a simpler pattern when searching for bindings that do not conform to a particular criteria.
 
 #### Some existing Object Pattern Matching Languages
 
@@ -280,31 +280,31 @@ And we added a library in Pharo (RBParseTreeSearcher) because this is the langua
 @tabobjectLanguagesTable
 |Characteristics        |  C#  |  Java |   Pharo (4) |  Python |  Ruby |  Rust | Scala
 | --------------------- | ---- | ----- | ----------- | ------- | ----- | ----- | -----
-|''Paradigm''           |  D&I |   D&I |     I       |  D&I    |  D&I  |  D&I  |   D
-|''Path traversal''     |      |       |             |    x    |       |   x   |   x
-|''Recursive traversal''|      |       |      x      |         |       |       |      
-|''Repeated search''    |      |       |      x      |         |       |       |
-|''Object matching''    |   x  |  \(1\)|     \(5\)   |    x    |   x   |   x   |   x
-|''Wildcard''           |   x  |   x   |      x      |    x    |   x   |   x   |   x
-|''Structural pattern'' |   x  |   x   |      x      |    x    |   x   |   x   |   x
-|''Complex lists''      |   x  |  \(2\)|      x      |         |   x   |       | 
-|''Literals''           |   x  |   x   |      x      |    x    |   x   |   x   |   x
-|''Logical matcher''    |   x  |   x   |             |    x    |   x   |   x   |   x
-|''Negation''           |   x  |  \(3\)|             |    x    |   x   |       | 
-|''Non-Linear pattern'' |   x  |   x   |      x      |         |       |       |
+|_Paradigm_           |  D&I |   D&I |     I       |  D&I    |  D&I  |  D&I  |   D
+|_Path traversal_     |      |       |             |    x    |       |   x   |   x
+|_Recursive traversal_|      |       |      x      |         |       |       |      
+|_Repeated search_    |      |       |      x      |         |       |       |
+|_Object matching_    |   x  |  \(1\)|     \(5\)   |    x    |   x   |   x   |   x
+|_Wildcard_           |   x  |   x   |      x      |    x    |   x   |   x   |   x
+|_Structural pattern_ |   x  |   x   |      x      |    x    |   x   |   x   |   x
+|_Complex lists_      |   x  |  \(2\)|      x      |         |   x   |       | 
+|_Literals_           |   x  |   x   |      x      |    x    |   x   |   x   |   x
+|_Logical matcher_    |   x  |   x   |             |    x    |   x   |   x   |   x
+|_Negation_           |   x  |  \(3\)|             |    x    |   x   |       | 
+|_Non-Linear pattern_ |   x  |   x   |      x      |         |       |       |
 
 Table *@tabobjectLanguagesTable@* shows the features supported by different OO languages that have native pattern matching capabilities.
 
-Without surprise, ''Object matching'' is well supported. 
-''Structural pattern'' and ''Wildcard'' are also two features that are common. On the other hand, it shows that features like ''Path traversal'', ''Recursive traversal'', ''Repeated search'', ''Complex lists'' and ''Non-Linear pattern'' are not universally supported by object matchers.
+Without surprise, _Object matching_ is well supported. 
+_Structural pattern_ and _Wildcard_ are also two features that are common. On the other hand, it shows that features like _Path traversal_, _Recursive traversal_, _Repeated search_, _Complex lists_ and _Non-Linear pattern_ are not universally supported by object matchers.
 
-We are interested in creating an object matching language that could be used to match objects in models, taking into consideration that features like ''Repeated search'', ''Non-Linear pattern'', ''Complex lists'', ''Recursive traversal'' and ''Path traversal'' are also important for such matching languages, in order to provide developers with the possibility to create patterns in a flexible way, allowing deep matching for deeply recursive models.
+We are interested in creating an object matching language that could be used to match objects in models, taking into consideration that features like _Repeated search_, _Non-Linear pattern_, _Complex lists_, _Recursive traversal_ and _Path traversal_ are also important for such matching languages, in order to provide developers with the possibility to create patterns in a flexible way, allowing deep matching for deeply recursive models.
 
 ### MoTion
 @secMotion
 
 MoTion is a new object pattern matching language in Pharo. 
-A pattern matching language works on a finite set of objects that we will call a ''model''. Examples of models are: the Pharo AST of a method, the DOM of an XML document, the objects loaded from a JSON file,... 
+A pattern matching language works on a finite set of objects that we will call a _model_. Examples of models are: the Pharo AST of a method, the DOM of an XML document, the objects loaded from a JSON file,... 
 MoTion can deal with Pharo objects independently of the model containing the data.
 MoTion combines both features for graph pattern matching and object matching listed previously, and by doing so, it enables expressing patterns declaratively and applying matches to complex object structures.
 
@@ -406,9 +406,9 @@ We now explain the semantics of the pattern matching language constructs while s
 
 -   The <SpaceShip> operator tries to match a <Property> (of an object) on the left with a <Value> on the right. Note: the tilde version is a negation, it specifies that the <Property> should not match the <Value>; It is the only way to specify a negation in MoTion. As noted before, it is a polymorphic operator depending on the content in the <Property>. If this is an object, the operator tries to match this object to the <Value>; If it is a collection, the operator tries to match any element of the collection to the <Value>.
 
--   To define an ''object pattern'', one specifies its type using the <PharoClass> followed by the <Percentage> operator like in: `ClassA % {} `. '%' matches direct instances of the class, whereas '%%' matches instances of the class or any of its subclasses.
+-   To define an _object pattern_, one specifies its type using the <PharoClass> followed by the <Percentage> operator like in: `ClassA % {} `. '%' matches direct instances of the class, whereas '%%' matches instances of the class or any of its subclasses.
 
--   These two operators can express sub-patterns and the properties of the matched object inside the curly braces. Object properties are instance variable accessors. The curly braces act as a conjunction of sub-patterns specifying the values that properties should match. It can be seen as a ''Logical matcher''. The following pattern matches an object of class `ClassA`, with a <Property>: `property1`, having the <Value>: `aValue1`, and `property2` having the <Value>: `aValue2`.
+-   These two operators can express sub-patterns and the properties of the matched object inside the curly braces. Object properties are instance variable accessors. The curly braces act as a conjunction of sub-patterns specifying the values that properties should match. It can be seen as a _Logical matcher_. The following pattern matches an object of class `ClassA`, with a <Property>: `property1`, having the <Value>: `aValue1`, and `property2` having the <Value>: `aValue2`.
 
 ```St
 ClassA % {
@@ -417,9 +417,9 @@ ClassA % {
 }
 ```
 
-The sub-patterns could also be more complex (see below, ''Structural pattern''). This mechanism contributes to the seamless addition of various properties, in a ''declarative'' way.
+The sub-patterns could also be more complex (see below, _Structural pattern_). This mechanism contributes to the seamless addition of various properties, in a _declarative_ way.
 
--   The <Percentage>, combined with the <SpaceShip> operator, also allows to express ''Structural pattern'' where a first object is matched, then a second object in one of the properties of the first is matched. One may express a sub-pattern on this second object. For example, the following pattern matches an instance of `ClassA` with `aValue1` in its `property1`, and an instance of `ClassB` in its `property2`. This second object must have `aValue3` in its `property3`.
+-   The <Percentage>, combined with the <SpaceShip> operator, also allows to express _Structural pattern_ where a first object is matched, then a second object in one of the properties of the first is matched. One may express a sub-pattern on this second object. For example, the following pattern matches an instance of `ClassA` with `aValue1` in its `property1`, and an instance of `ClassB` in its `property2`. This second object must have `aValue3` in its `property3`.
 
 ```St
 ClassA % {
@@ -430,9 +430,9 @@ ClassA % {
 }
 ```
 
--   ''Non-Linear pattern'' is obtained using the "`@`" operator followed by a name (for example: `@x`). This allows to store a matched object in the "variable" to reuse it somewhere else in the pattern.
+-   _Non-Linear pattern_ is obtained using the "`@`" operator followed by a name (for example: `@x`). This allows to store a matched object in the "variable" to reuse it somewhere else in the pattern.
 
--   ''Wildcard'' ("`_`") can be used to indicate a property whose name is not known, when one only cares for its value:
+-   _Wildcard_ ("`_`") can be used to indicate a property whose name is not known, when one only cares for its value:
 ```St
 ClassA % {
     #_ <=> aValue.
@@ -440,9 +440,9 @@ ClassA % {
 ```
 This pattern matches an instance of `ClassA` with an unnamed property matching the value `aValue`.
 
--   The <PathTraversal> operators implement ''Path traversal'' by allowing to "chain" multiple properties in a pattern. Such paths help reducing complex pattern's expression, by accessing a chain of objects and their properties:
+-   The <PathTraversal> operators implement _Path traversal_ by allowing to "chain" multiple properties in a pattern. Such paths help reducing complex pattern's expression, by accessing a chain of objects and their properties:
 
--   The "`>`" operator implements ''Path traversal'' by allowing to "chain" multiple properties in a pattern. Such paths help reducing complex pattern's expression, by accessing a chain of objects and their properties: The following pattern first matches an instance of `ClassA`, then it takes the object in its `property1` and the value in `property2` of this second object. This value should match `aValue`.
+-   The "`>`" operator implements _Path traversal_ by allowing to "chain" multiple properties in a pattern. Such paths help reducing complex pattern's expression, by accessing a chain of objects and their properties: The following pattern first matches an instance of `ClassA`, then it takes the object in its `property1` and the value in `property2` of this second object. This value should match `aValue`.
 
 ```St
 ClassA % {
@@ -459,7 +459,7 @@ ClassA % {
 ```
 Note that the "`>`" operator is also polymorphic. Similarly to "`<=>`", if one of the objects in the path is a collection, the operator will look for an element of this collection that allows to continue the search, that is to say that has a property matching the remaining part of the pattern.
 
--   MoTion allows to perform ''Recursive traversal'' through a "`*`" operator combined with the ''Path traversal'' operator "`>`". In a chain of objects, one may know the initial property and the final one, but not know how long the chain of objects is.
+-   MoTion allows to perform _Recursive traversal_ through a "`*`" operator combined with the _Path traversal_ operator "`>`". In a chain of objects, one may know the initial property and the final one, but not know how long the chain of objects is.
 ```St
 ClassA % {
     #'property1>repeatedProp*' <=> aValue.
@@ -467,7 +467,7 @@ ClassA % {
 ```
 This pattern will match first an instance of `ClassA`, then the object in its property `property1` then it will match a chain of objects all having a property `repeatedProp` and one of them containing the value `aValue`. The match ends with this last object.
 
--   The <RecursiveTraversal> operator may also be combined with a ''wildcard'' ("`_`").
+-   The <RecursiveTraversal> operator may also be combined with a _wildcard_ ("`_`").
 ```St
 ClassA % {
     #'property1>_*>propN' <=> aValue.
@@ -475,7 +475,7 @@ ClassA % {
 ```
 This pattern will match first an instance of `ClassA`, then the object in its property `property1` then a chain of objects with unknown properties ending with an object having a property `propN` with value `aValue`.
 
--   It is possible to match ''Complex lists'' using the <ListePattern> and declaring how the list should look like. Note that this is not the same operator as <Percentage> (see above). This operator allows to express that given elements in a list should match specific patterns.
+-   It is possible to match _Complex lists_ using the <ListePattern> and declaring how the list should look like. Note that this is not the same operator as <Percentage> (see above). This operator allows to express that given elements in a list should match specific patterns.
 ```St
 {#'@x'. #'@x'}
 ```
@@ -485,7 +485,7 @@ This pattern matches a list containing exactly two elements that are the same (u
 ```St
 {#'@x'. #'*_'. #'@x'}
 ```
-This pattern, matches a list with first and last elements equal and of unspecified length (obviously at least 2). Note that `’*_’` is used in list matching whereas `’_*’` is a repeated ''wildcard'' used in ''Recursive traversal''.
+This pattern, matches a list with first and last elements equal and of unspecified length (obviously at least 2). Note that `’*_’` is used in list matching whereas `’_*’` is a repeated _wildcard_ used in _Recursive traversal_.
 
 -   To express that one element is part of a collection, MoTion offers a shortcut. To check if the value 5 is part of a collection (contained in the property `someProperty` of an instance of `ClassA`) one can use the pattern:
 ```St
@@ -502,7 +502,7 @@ ClassA % {
 ```
 This, however, could also match an instance of `ClassA` with a property `someProperty` containing exactly the value 5 (with no collection).
 
--   Finally, there is another operator for ''Logical matcher'': `orMatches:`. It allows to express a disjunction of two patterns (one or the other match). (Remember that <Percentage> implements a conjunction of patterns within the curly braces.)
+-   Finally, there is another operator for _Logical matcher_: `orMatches:`. It allows to express a disjunction of two patterns (one or the other match). (Remember that <Percentage> implements a conjunction of patterns within the curly braces.)
 ```St
 ClassA % {
     #someProperty <=> (5 orMatches: 6)
@@ -581,14 +581,14 @@ It has 19 subclasses performing some operators (like `%` ) or literals as patter
 
 -   Classes `MatcherResult` and `MatcherContext` that hold the result of a matching. An instance of `MatcherResult` is obtained as the returned value of the `match:` method (see above)
 
--   Class `MotionPath` to implement the various path features: <PropertyElement> (ie. `#name`), ''Wildcard''(ie. `#_`), ''Path traversal''(ie. `>`),...
+-   Class `MotionPath` to implement the various path features: <PropertyElement> (ie. `#name`), _Wildcard_(ie. `#_`), _Path traversal_(ie. `>`),...
 
 It has six subclasses all implementing a method `resolveFrom:`.
 
 -   Six implementations of a method `asMatcher` added to pre-existing classes Array, Boolean, Class, Number, String, and Symbol. 
 They convert a literal or Object to a pattern (ex: 'A sample text here' `asMatcher`).
 
--   Methods `%` and `%%` implemented in Class to allow expressing ''Object matching''(ie. <PharoClass> `% {}`).
+-   Methods `%` and `%%` implemented in Class to allow expressing _Object matching_(ie. <PharoClass> `% {}`).
 
 -   the <SpaceShip> methods (ie. `<=>` and `<~=>`) added to class `Object`
 
@@ -599,13 +599,13 @@ We actually implemented an extension of MoTion for Famix.
 
 In Famix, the properties of entities can represent:
 
--   "Famix ''properties''" that contain "Famix primitive types" (Numbers, String or Boolean);
+-   "Famix _properties_" that contain "Famix primitive types" (Numbers, String or Boolean);
 
--   ''associations'' that point to another Famix entity (a FamixJavaMethod ''invokes'' multiple other FamixJavaMethods);
+-   _associations_ that point to another Famix entity (a FamixJavaMethod _invokes_ multiple other FamixJavaMethods);
 
--   ''composition'' relationships (a FamixJavaClass ''contains'' multiple FamixJavaMethods).
+-   _composition_ relationships (a FamixJavaClass _contains_ multiple FamixJavaMethods).
 
-Because the properties are meta-described, one can manipulate them programmatically. We therefore experimented with modifying the behavior of the path operator ("`>`") to navigate only ''composition'' relationships. We also added another operator to preserve the previous behavior of the path operator.
+Because the properties are meta-described, one can manipulate them programmatically. We therefore experimented with modifying the behavior of the path operator ("`>`") to navigate only _composition_ relationships. We also added another operator to preserve the previous behavior of the path operator.
 
 #### Changing the syntax
 
@@ -668,11 +668,11 @@ FASTJavaMethodEntity % {
 }
 ```
 
-The pattern was applied to FAST-Java, a member of the Famix family specializing in modeling Java ASTs. It starts by matching a FASTJavaMethodEntity (ie. a method node) and looks at its children for a FASTJavaMethodInvocation (line 2). Because this invocation could be at any depth in the AST, he used the "`*`" operator (''Recursive traversal''). On the invocations matched, it looks for the receiver's name which should be "config" (line 3). The name of the invocation (method invoked) should be "get" (line 4). The argument of the invocation should be an object with the property "primitiveValue" matching `aKey` (line 5). Here, the key is a parameter that can change for different searches.
+The pattern was applied to FAST-Java, a member of the Famix family specializing in modeling Java ASTs. It starts by matching a FASTJavaMethodEntity (ie. a method node) and looks at its children for a FASTJavaMethodInvocation (line 2). Because this invocation could be at any depth in the AST, he used the "`*`" operator (_Recursive traversal_). On the invocations matched, it looks for the receiver's name which should be "config" (line 3). The name of the invocation (method invoked) should be "get" (line 4). The argument of the invocation should be an object with the property "primitiveValue" matching `aKey` (line 5). Here, the key is a parameter that can change for different searches.
 
 We noted in this work:
 
--   The ''Recursive traversal'' which was necessary because the invocation is at different depths in the AST in different methods.
+-   The _Recursive traversal_ which was necessary because the invocation is at different depths in the AST in different methods.
 
 -   The ease of use, the developer was able to work alone after a small presentation of MoTion syntax of only half an hour.
 
@@ -739,11 +739,11 @@ In summary:
 
 -   The user code is longer, one class, three methods, 30 lines instead of a 7 lines pattern;
 
--   ''Recursive traversal''(`#’children*’` in MoTion) required to implement a recursive method;
+-   _Recursive traversal_(`#’children*’` in MoTion) required to implement a recursive method;
 
 -   Searching in the list of arguments (`#’arguments> primitiveValue’ <=>`aKey) required to loop over the values returned by `arguments` to check their `primitiveValue`;
 
--   The ''Non-Linear pattern''(`as: #configInvocation` in MoTion) simplifies collecting the results that can be later retrieved with `#collectBindings: for:`. Traditional programming requires taking care of how results are returned by each method to collect and return them at the end;
+-   The _Non-Linear pattern_(`as: #configInvocation` in MoTion) simplifies collecting the results that can be later retrieved with `#collectBindings: for:`. Traditional programming requires taking care of how results are returned by each method to collect and return them at the end;
 
 -   The class and methods created are very specific to the problem considered and another pattern would require reinventing a new solution with a possibly very different strategy.
 
@@ -786,7 +786,7 @@ Note, however, that the experiments were related to program analysis, and that m
 ### Conclusion 
 @secConclusion
 
-In this chapter, we introduce MoTion, a new generic object pattern matching language for Pharo Smalltalk. A pattern matching language specifically tailored to match Pharo ASTs is already included in Pharo. MoTion can, however, match ASTs and, more generally, any Pharo object, and it can be used on-the-fly, ''i.e.,'': it's not required to redefine artifacts, like object signatures, to use it (opposed to Tom).
+In this chapter, we introduce MoTion, a new generic object pattern matching language for Pharo Smalltalk. A pattern matching language specifically tailored to match Pharo ASTs is already included in Pharo. MoTion can, however, match ASTs and, more generally, any Pharo object, and it can be used on-the-fly, _i.e.,_: it's not required to redefine artifacts, like object signatures, to use it (opposed to Tom).
 
 In order to create a new object pattern matching language that can offer developers some capabilities like searching among objects with deep depth, defining non-linear patterns, and applying list matching, we have extracted a couple of features known to be adopted by graph and object pattern matching and applied them to MoTion.
 
