@@ -171,7 +171,7 @@ Different executions have different allocation paths.
 Illimani provides a chart with the allocation paths for the top allocators.
 The number of top allocators is a customizable parameter that can be changed by the user.
 
-![The 5 top most allocator classes](figures/allocations-second-allocator-without-palette-by-classes.pdf label=figAllocationsWithoutPaletteByClasses)
+![Allocation paths](figures/allocations-second-allocator-without-palette-by-classes.pdf label=figAllocationsWithoutPaletteByClasses)
 
 On the one hand, Figure *@figAllocationsWithoutPaletteByClasses* shows that the class `GrafPort`, the second most allocator, allocates all of its objects in the first moment and then stops allocating.
 On the other hand, the other four classes allocate the objects continuously during the execution.
@@ -181,27 +181,29 @@ This accumulative chart is available in the Illimani's UI.
 ### Use Case: Identifying Allocation Sites
 @secUseCaseColorPalette
 
-A Pharo expert had a hint about a memory leak of objects of the type `Color`].
+A Pharo expert had a hint about a memory leak of objects of the type `Color`.
 Illimani provides the possibility of filtering the profiling for a given specific domain.
-We configure the profiler to capture all the `Color` allocations that an application creates.
+We configure the profiler to capture all `Color` allocations.
 We run the profiler on Pharo 11, commit `1a5afe1`.
 
 Our target application was *MorphicUI*, a graphics framework for Pharo.
 It has 669 classes with 11236 methods in Pharo 11.
-
 We opened 30 Pharo core tools and we let each of the instances of the tools render for 100 Morphic rendering cycles.
 Through this we are able to control how many times each of the tools is rendered, making the profiling reproducible.
 The tools are: Iceberg, Playground, and the Pharo Inspector.
 We opened 10 of each making 30 in total.
 
-Figure [1](#fig:allocations-second-allocator-without-palette-by-classes){reference-type="ref" reference="fig:allocations-second-allocator-without-palette-by-classes"} presents an allocation paths plot for the top 5 allocator classes.
+![The 5 top most allocator classes](figures/allocations-second-allocator-without-palette-by-classes.pdf label=figTopFiveAllocators)
+
+Figure @figTopFiveAllocators presents an allocation paths plot for the top 5 allocator classes.
+
 One can observe that the class `PharoDarkTheme` is the allocation site with the most allocations.
 `PharoDarkTheme` is a subclass of `UITheme`.
 `UITheme` is a central class in Pharo that is responsible for setting drawing configurations and also to provide the theme colors that are used in the Pharo IDE.
 
 During the application's execution, we observed 23,686 total `Color` object allocations.
 
-Table [1](#tab:topallocationsbaseline){reference-type="ref" reference="tab:topallocationsbaseline"} shows that the [PharoDarkTheme]{.smallcaps} class is responsible for 66% of all the [Color]{.smallcaps} allocations.
+Table *@tabTopAllocationsBaseline* shows that the `PharoDarkTheme` class is responsible for 66% of all the `Color`.
 Using the customizable queries of Illimani we analyzed the allocated objects by the UI Theme and we detected that only 15 out of 23,686 colors were different, meaning that 99,9% of the allocations were redundant.
 
 @tabTopAllocationsBaseline
@@ -217,173 +219,55 @@ Using the customizable queries of Illimani we analyzed the allocated objects by 
 
 Top 5 color allocations when opening 30 Pharo tools
 
+**Summary:** Using Illimani we identified an allocation site in the class `PharoDarkTheme` that was allocating 66%of all the colors with 99,9% redundant allocations.
 
-[]{#tab:topallocationsbaseline label="tab:topallocationsbaseline"}
+#### Color Palette
 
-::: cbox
-**Summary:** Using Illimani we identified an allocation
-site in the class [PharoDarkTheme]{.smallcaps} that was allocating 66%
-of all the colors with 99,9% redundant allocations.
-:::
+Looking at the implementation of `UITheme` we identified the cause of the redundant allocations: each time that a user asks for a color, the `UITheme` class creates a new instance of it.
+We developed a Color Palette as a solution.
+The Color Palette lazily allocates the colors when they are requested by a user and caches them once created.
+When the `UITheme` changes, for example changing from a dark theme to a light theme, the caches are invalidated and they are recalculated on demand.
 
-## Color Palette
+With the Color Palette fix, we profiled again the same execution to compare the baseline implementation against the Color Palette.
+In Table  *@tabbaselinevscolorpalette* and in Figure *@figallocations-second-allocator-with-palette-by-classes* we see that with the Color Palette implementation, the `PharoDarkTheme` does no longer allocate `Color`. objects.
 
-Looking at the implementation of [UITheme]{.smallcaps} we identified the
-cause of the redundant allocations: each time that a user asks for a
-color, the [UITheme]{.smallcaps} class creates a new instance of it. We
-developed a Color Palette as a solution. The Color Palette lazily
-allocates the colors when they are requested by a user and caches them
-once created. When the [UITheme]{.smallcaps} changes, for example
-changing from a dark theme to a light theme, the caches are invalidated
-and they are recalculated on demand. The Color Palette was integrated
-into Pharo 11 in the commit `d540bcf`.
+![The 5 top most color allocator classes with the Color Palette implementation](figures/allocations-second-allocator-with-palette-by-classes.pdf label=figallocations-second-allocator-with-palette-by-classes)
 
-With the Color Palette fix, we profiled again the same execution to
-compare the baseline implementation against the Color Palette. In
-Table [2](#tab:baselinevscolorpalette){reference-type="ref"
-reference="tab:baselinevscolorpalette"} and in
-Figure [3](#fig:allocations-second-allocator-with-palette-by-classes){reference-type="ref"
-reference="fig:allocations-second-allocator-with-palette-by-classes"} we
-see that with the Color Palette implementation, the
-[PharoDarkTheme]{.smallcaps} does no longer allocate [Color]{.smallcaps}
-objects.
+Object Allocations in Baseline vs Color Palette implementation
 
-::: {#tab:baselinevscolorpalette}
-         **Allocator class**          **Baseline**   **Color Palette**   **Diff**
-  ---------------------------------- -------------- ------------------- -----------
-    [PharoDarkTheme]{.sans-serif}        15,629              0           $\infty$
-     [RubScrollBar]{.sans-serif}         4,096             4,096         1$\times$
-   [Total Allocations]{.sans-serif}      23,686            7,974         3$\times$
+@tabbaselinevscolorpalette
+|     **Allocator class** |  **Baseline**  | **Color Palette** |  **Diff**
+|  ---------------------- | -------------- |  ---------------- | ----------
+|    `PharoDarkTheme`     |    15,629      |         0         |   $\infty$
+|     `RubScrollBar`      |    4,096       |       4,096       |  1$\times$
+|   `Total Allocations`   |    23,686      |       7,974       |  3$\times$
 
-  : Object Allocations in Baseline vs Color Palette implementation
-:::
 
-[]{#tab:baselinevscolorpalette label="tab:baselinevscolorpalette"}
-
-::: cbox
-**Summary:** With the Color Palette implementation the
-[PharoDarkTheme]{.smallcaps} class does not longer allocates redundant
-colors.
-:::
-
-![The 5 topmost color allocator classes with the Color Palette
-implementation](figures/allocations-second-allocator-with-palette-by-classes.pdf){#fig:allocations-second-allocator-with-palette-by-classes
-width="1.0\\linewidth"}
+**Summary:** With the Color Palette implementation the `PharoDarkTheme` class does not longer allocates redundant colors.
 
 ## Other allocation sites
 
-We profiled the same execution setup, opening 30 Pharo tools, this time
-not filtering the allocated objects but capturing all of the
-allocations. We observe in
-Table [3](#tab:allobjectallocations){reference-type="ref"
-reference="tab:allobjectallocations"} that the classes
-[Rectangle]{.smallcaps} and [Margin]{.smallcaps} are the ones that are
-allocated the most, summing 64% of all the allocations between them. The
-methods [Margin\>\>#insetRectangle]{.smallcaps} and
-[Number\>\>#asMargin]{.smallcaps} are the two methods producing all of
-those allocations. We did not investigate further the causes of these
-object allocation sites. The heat map presented in
-Figure [2](#fig:heatmapNew){reference-type="ref"
-reference="fig:heatmapNew"} shows the relationship between the most
-allocators and the most allocated for this profile. One observes that
-the method [Margin\>\>#insetRectangle]{.smallcaps} allocates mostly
-[Rectangle]{.smallcaps} objects while [Number\>\>#asMargin]{.smallcaps}
-allocates [Margin]{.smallcaps} objects.
+We profiled the same execution setup, opening 30 Pharo tools, this time not filtering the allocated objects but capturing all of the allocations.
+We observe in Table *@taballobjectallocations* that the classes `Rectangle` and `Margin` are the ones that are allocated the most, summing 64% of all the allocations between them.
+The methods `Margin\>\>#insetRectangle` and `Number\>\>#asMargin` are the two methods producing all of those allocations.
+We did not investigate further the causes of these object allocation sites.
+The heat map presented in Figure *@figHeatmapNew* shows the relationship between the most allocators and the most allocated for this profile. One observes that the method `Margin\>\>#insetRectangle` allocates mostly `Rectangle` objects while `Number\>\>#asMargin` allocates `Margin` objects.
 
-::: {#tab:allobjectallocations}
-       **Allocated object class**       **Allocations**   **%**
-  ------------------------------------ ----------------- -------
-        [Rectangle]{.sans-serif}            699,625        45%
-         [Margin]{.sans-serif}              300,663        19%
-       [ByteString]{.sans-serif}            111,662        7%
-    [OrderedCollection]{.sans-serif}        78,474         5%
-       [WriteStream]{.sans-serif}           60,448         4%
-   [Rest of the classes]{.sans-serif}       314,480        20%
+Allocated Objects
 
-  : Allocated Objects
-:::
+@taballobjectallocations
+|  **Allocated object class** | **Allocations** |  **%**
+|  -------------------------|-----------| -----------------
+|        Rectangle         |   699,625    |    45%
+|         Margin            |  300,663     |   19%
+|       ByteString         |   111,662    |    7%
+|    OrderedCollection     |   78,474     |    5%
+|       WriteStream        |   60,448     |    4%
+|   Rest of the classes     |  314,480     |   20%
 
-[]{#tab:allobjectallocations label="tab:allobjectallocations"}
+![Most allocators-allocated heat map](figures/heatmapNew.pdf label=figHeatmapNew)
 
-::: cbox
-**Summary:** Illimani reports other two object allocation
-sites that allocate objects of type [Rectangle]{.smallcaps} and
-[Margin]{.smallcaps} that represent 64% of the allocations.
-:::
-
-# Related work []{#sec:relatedWork label="sec:relatedWork"}
-
-***Visualizing object allocation sites.*** Infante et al. [@Infa15a]
-have developed a Pharo memory profiler that reports object production
-sites and memory usage called Memory Blueprint. Memory Blueprint shows a
-call graph with the methods that produce objects and a visualization of
-the memory usage of the allocated objects. Their work focuses on
-identifying object production sites while Illimani also
-has a rich model for representing the object allocations that allows the
-user to query them to calculate other statistics. It can be also queried
-without the user interface as it is independent of it and it allows
-inspecting the reified stacks of the allocation contexts. Fernandez et
-al. [@Fern18a] made a visualization related to Memory Blueprint, but
-that keeps the context of the method and the source code of it.
-Illimani also provides for each of the allocated objects
-the allocator method and class as well as the allocation context.
-Fernandez et al. [@Fern22a] have developed a call graph visualization,
-similar to their previous work but analyzing the memory consumption of
-Python applications.
-
-***Allocation matrix.*** De Pauw et al. [@Pauw94a] developed an
-Allocation matrix, which is a visualization that shows the relationship
-between the most allocators and the most allocated for the C++
-programming language. We used this idea to implement our heat map
-visualization.
-
-***Resources consumption reduction.*** Bergel et al. [@Berg18a] have
-worked on analyzing the memory footprint of the expandable collections
-of Pharo. They analyzed the allocation of internal arrays and their use
-to propose an optimized version of the expandable collections. Our work
-is different but complementary in the sense that we profiled the memory
-allocation of Pharo tools to identify allocation sites to reduce its
-memory footprint.
-
-***Domain specific profilers.*** Ressia et al. [@Ress12b] developed a
-domain-specific profiler framework in Pharo that the user can specify
-the profiled domain to allow the profiler to give more precise
-information about the specific domain. They developed this technique to
-profile a know performance issue that they had and the profiling tools
-that were available at that moment were not sufficient to localize the
-problem. The profiler that we developed allowed us to identify a problem
-that we were not aware of. Thanks to its architecture,
-Illimani also allows filtering the profiling for a given
-specific domain. The user can specify which set of classes wants to
-profile and which type of object allocations she wants to capture.
-
-***Tracking of Allocation Sites.*** Odaira et al. [@Odai10a] have
-working on tracking object allocation sites in Java. They developed two
-new approaches to trace the object allocation sites with a minimum
-slowdown of the execution. They store the allocation information on the
-object hash code field or in the object header. They use the allocation
-information to optimize the garbage collector copying directly into a
-tenured space certain objects. Our work does not focus on the tracing
-technique, we use method wrappers. Our solution does not require running
-the profiler on a modified virtual machine and it has a rich model that
-offers the possibility of extracting information from the allocation
-context.
-
-# Limitations []{#sec:limitations label="sec:limitations"}
-
-In Pharo, there are special methods, called primitives that are executed
-natively. At the moment of writing this paper, we were not able to wrap
-these special methods. In Pharo 11 we identified in total 3 primitive
-methods that allocate objects of classes [Array, Point]{.smallcaps} and
-[Interval]{.smallcaps}.
-
-Our profiler has an overhead of around 10$\times$. However, this not
-affects the precession of the measurements as the application will make
-the same number of allocations.
-
-Illimani does 3 object allocations that are registered
-during the profile. The number does not vary no matter the code that is
-being profiled. This is not a significant perturbation for our profiles.
+**Summary:** Illimani reports other two object allocation sites that allocate objects of type [Rectangle]{.smallcaps} and [Margin]{.smallcaps} that represent 64% of the allocations.
 
 # Conclusion and Future Work []{#sec:conclusion label="sec:conclusion"}
 
@@ -413,15 +297,3 @@ There is previous work done on energy profiling in Pharo [@Berg16b]. We
 want to continue this work to include energy measurements along with the
 object allocations. We will also develop a solution at the bytecode
 level to be able to wrap the primitive methods too.
-
-[^1]: The version of the tool and the technical report are dated March
-    2023
-
-[^2]: This work © 2023 is licensed under [CC BY 4.0
-    ](https://creativecommons.org/licenses/by/4.0/)
-
-[^3]: https://github.com/jordanmontt/illimani-memory-profiler
-
-[^4]: https://github.com/pharo-contributions/MethodProxies
-
-[^5]: https://gist.github.com/jordanmontt/05c51c5527bf1c8e375117a3b9020c1e
