@@ -40,7 +40,6 @@ It will be published on the Bibliotheque Nationale de France and it will be avai
 S. Ducasse and T. Rakic
 
 
-<!inputFile|path=Chapters/Sample1/Sample1.md!>
+<!-- <!inputFile|path=Chapters/Sample1/Sample1.md!> -->
+<!inputFile|path=Chapters/MoTion/Motion.md!>
 <!inputFile|path=Chapters/Illimani/Illimani.md!>
-
-
