@@ -73,6 +73,20 @@ It presents this information with memory usage tables, accumulative allocation e
 It is also possible to query the profiler to make a custom analysis.
 Illimani is capable of filtering the profiling for a given specific domain.
 
+In Pharo, almost all computations are done by sending messages [cite @Berg11d].
+Allocating an object is done also by sending a message.
+In Pharo 13, we identified 14 allocation methods.
+
+We instrumented these 14 allocator methods to intercept whenever they are invoked using MethodProxies (cite).
+We use MethodProxies as the instrumentation back-end of Illimani.
+MethodProxies allows one to decorate and control the execution of a method: execution an action before and after a method's execution.
+When a sender requests an object allocation, the instrumentation captures the execution before the object is returned to the sender.
+Inside the instrumentation, we capture the exact allocation time and an object’s model is created that will hold the object’s allocation information.
+The MethodProxies architecture ensures that the code will be uninstrumented after the profiling is finished.
+None of the allocations that are made in the process of extracting the information are intercepted.
+
+### A glance over the UI
+
 ![Illimani's user interface](figures/illi-ui.png label=figIlliUI)
 
 Illimani offers the following features:
@@ -164,33 +178,7 @@ On the other hand, the other four classes allocate the objects continuously duri
 These different execution paths are identifiable thanks to the allocation path chart.
 This accumulative chart is available in the Illimani's UI.
 
-## Precise memory profiling []{#sec:preciseProfiler label="sec:preciseProfiler"}
-
-In Pharo, almost all computations are done by sending messages (invoking
-methods) [@Berg11d]. Allocating an object is done also by sending a
-message. The methods [Behavior\>\>#basicNew]{.smallcaps},
-[Behavior\>\>#basicNew:]{.smallcaps}, [Array class\>\>new:]{.smallcaps},
-and [Number\>\>@]{.smallcaps} are the four methods that allocate objects
-in Pharo.
-
-Illimani automatically instruments the execution of the
-profiled application to capture its object allocations. It instruments
-the four allocator methods to control their execution before and after
-being invoked. We use the library *MethodProxies*[^4] for instrumenting
-the methods. *MethodProxies* add defined actions to be executed and or
-after the method that is being instrumented.
-
-Each time that one of those methods is invoked, Illimani
-intercepts the call and registers important information about the
-allocation context, the object's type, and its size in memory. Right
-after the allocation is made, we store the allocated object's type, its
-allocator class and method, and different information about the
-allocation's context. The *MethodProxies* architecture ensures that the
-code will be de-instrumented after the profiling is finished. None of
-the allocations that are made in the process of extracting the
-information are intercepted.
-
-# Use Case: Identifying Allocation Sites []{#sec:useCase label="sec:useCase"}
+### Use Case: Identifying Allocation Sites []{#sec:useCase label="sec:useCase"}
 
 A Pharo expert had a hint about a memory leak of objects of the type
 [Color]{.smallcaps}. Illimani provides the possibility of
