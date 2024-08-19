@@ -178,56 +178,45 @@ On the other hand, the other four classes allocate the objects continuously duri
 These different execution paths are identifiable thanks to the allocation path chart.
 This accumulative chart is available in the Illimani's UI.
 
-### Use Case: Identifying Allocation Sites []{#sec:useCase label="sec:useCase"}
+### Use Case: Identifying Allocation Sites
+@secUseCaseColorPalette
 
-A Pharo expert had a hint about a memory leak of objects of the type
-[Color]{.smallcaps}. Illimani provides the possibility of
-filtering the profiling for a given specific domain. We configure the
-profiler to capture all the [Color]{.smallcaps} allocations that an
-application creates. We run the profiler on Pharo 11, commit `1a5afe1`.
+A Pharo expert had a hint about a memory leak of objects of the type `Color`].
+Illimani provides the possibility of filtering the profiling for a given specific domain.
+We configure the profiler to capture all the `Color` allocations that an application creates.
+We run the profiler on Pharo 11, commit `1a5afe1`.
 
 Our target application was *MorphicUI*, a graphics framework for Pharo.
 It has 669 classes with 11236 methods in Pharo 11.
 
-We opened 30 Pharo core tools and we let each of the instances of the
-tools render for 100 Morphic rendering cycles. Through this we are able
-to control how many times each of the tools is rendered, making the
-profiling reproducible. The tools are: Iceberg, Playground, and the
-Pharo Inspector. We opened 10 of each making 30 in total. The code to
-reproduce the experiment is available as a script[^5].
+We opened 30 Pharo core tools and we let each of the instances of the tools render for 100 Morphic rendering cycles.
+Through this we are able to control how many times each of the tools is rendered, making the profiling reproducible.
+The tools are: Iceberg, Playground, and the Pharo Inspector.
+We opened 10 of each making 30 in total.
 
-Figure [1](#fig:allocations-second-allocator-without-palette-by-classes){reference-type="ref"
-reference="fig:allocations-second-allocator-without-palette-by-classes"}
-presents an allocation paths plot for the top 5 allocator classes. One
-can observe that the class [PharoDarkTheme]{.smallcaps} is the
-allocation site with the most allocations. [PharoDarkTheme]{.smallcaps}
-is a subclass of [UITheme]{.smallcaps}. [UITheme]{.smallcaps} is a
-central class in Pharo that is responsible for setting drawing
-configurations and also to provide the theme colors that are used in the
-Pharo IDE.
+Figure [1](#fig:allocations-second-allocator-without-palette-by-classes){reference-type="ref" reference="fig:allocations-second-allocator-without-palette-by-classes"} presents an allocation paths plot for the top 5 allocator classes.
+One can observe that the class `PharoDarkTheme` is the allocation site with the most allocations.
+`PharoDarkTheme` is a subclass of `UITheme`.
+`UITheme` is a central class in Pharo that is responsible for setting drawing configurations and also to provide the theme colors that are used in the Pharo IDE.
 
-During the application's execution, we observed 23,686 total
-[Color]{.smallcaps} object allocations.
-Table [1](#tab:topallocationsbaseline){reference-type="ref"
-reference="tab:topallocationsbaseline"} shows that the
-[PharoDarkTheme]{.smallcaps} class is responsible for 66% of all the
-[Color]{.smallcaps} allocations. Using the customizable queries of
-Illimani we analyzed the allocated objects by the UI Theme
-and we detected that only 15 out of 23,686 colors were different,
-meaning that 99,9% of the allocations were redundant.
+During the application's execution, we observed 23,686 total `Color` object allocations.
 
-::: {#tab:topallocationsbaseline}
-           **Allocator class**            **Allocated colors**   **%**
-  -------------------------------------- ---------------------- -------
-      [PharoDarkTheme]{.sans-serif}              15,629           66%
-         [GrafPort]{.sans-serif}                 4,096            17%
-       [RubScrollBar]{.sans-serif}               1,842            8%
-   [GeneralScrollBarMorph]{.sans-serif}           480             2%
-       [TabLabelMorph]{.sans-serif}               346             1%
-    [Rest of the classes]{.sans-serif}            1293            2%
+Table [1](#tab:topallocationsbaseline){reference-type="ref" reference="tab:topallocationsbaseline"} shows that the [PharoDarkTheme]{.smallcaps} class is responsible for 66% of all the [Color]{.smallcaps} allocations.
+Using the customizable queries of Illimani we analyzed the allocated objects by the UI Theme and we detected that only 15 out of 23,686 colors were different, meaning that 99,9% of the allocations were redundant.
 
-  : Top 5 color allocations when opening 30 Pharo tools
-:::
+@tabTopAllocationsBaseline
+|    **Allocator class**   |  **Allocated colors** |   **%** 
+|  --------------------------- | ----------------- | ---------
+|      PharoDarkTheme          |  15,629           |  66%
+|         GrafPort             |  4,096            |  17%
+|       RubScrollBar           |  1,842            |  8%
+|   GeneralScrollBarMorph      |  480              |  2%
+|       TabLabelMorph          |  346              |  1%
+|    Rest of the classes       |  1293             |  2%
+
+
+Top 5 color allocations when opening 30 Pharo tools
+
 
 []{#tab:topallocationsbaseline label="tab:topallocationsbaseline"}
 
