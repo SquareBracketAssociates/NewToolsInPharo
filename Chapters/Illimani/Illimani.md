@@ -25,59 +25,47 @@ abstract: |
 
 _Authors:_ Sebastian Jordan Montaño -- Univ. Lille, Inria, CNRS, Centrale Lille, UMR 9189 CRIStAL, Lille, France -- sebastian.jordan@inria.fr and Guillermo Polito -- Univ. Lille, Inria, CNRS, Centrale Lille, UMR 9189 CRIStAL, Lille, France -- guillermo.polito@inria.fr and Stéphane Ducasse -- Univ. Lille, Inria, CNRS, Centrale Lille, UMR 9189 CRIStAL, Lille, France -- stephane.ducasse@inria.fr and Pablo Tesone -- Univ. Lille, Inria, CNRS, Centrale Lille, UMR 9189 CRIStAL, Lille, France -- pablo.tesone@inria.fr
 
-# Introduction
+### Introduction
+@secIntro
 
-Modern programming languages, such as Java, Python, or Pharo, provide
-automatic memory management with an efficient garbage collector. This
-makes the memory management of an application transparent to the
-developer. Debugging memory issues is known for being a tedious
-activity [@Chis11a]. There is a need for practical tools to support
-developers in their understanding of the memory consumption of their
-applications.
+Modern programming languages, such as Java, Python, or Pharo, provide automatic memory management with an efficient garbage collector.
+This makes the memory management of an application transparent to the developer.
+Debugging memory issues is known for being a tedious activity [@Chis11a].
+There is a need for practical tools to support developers in their understanding of the memory consumption of their applications.
 
-In this paper we present prototype version Illimani [^1]
-[^2] : a precise object allocation profiler for the Pharo Smalltalk
-programming language [@Duca22c]. It profiles the object allocations that
-are produced during the execution of an application. It provides
-information about the allocation context for each of the allocated
-objects, the evolution of memory usage, and garbage collector stress. It
-instruments the code to control the execution of the methods that are
-responsible for allocating objects using method wrappers. It also
-calculates the application's memory consumption.
+In this chapter, we present Illimani : a precise memory profiler (cite illimani papers and GitHub) framework for the Pharo programming language [@Duca22c].
+It serves to profile object allocations that are produced during the execution of an application.
+It can also profile object lifetimes by attaching an ephemeron to the allocations.
+It provides information about the allocation context for each of the allocated objects, the objects types, their size in memory, object lifetimes, the evolution of memory usage, garbage collector stress, among others.
+It also has a sampling mechanism, the user can configure a sampling rate to not capture all object allocations and to avoid bloating the memory.
 
-We used Illimani to profile the object allocations in the
-Morphic UI, a Pharo framework that is used to draw the Pharo IDE. We
-were able to detect object allocation sites. We found a color object
-allocation site in the class [UITheme]{.smallcaps}. We analyzed the
-allocated objects and we discover that 99,9% of the allocated colors
-were redundant. We developed a Color Palette at the domain level
-introducing an important missing architectural element that serves as a
-natural cache. With the Color Palette, we reduced the memory stress of
-the application by removing all the redundant allocations. We were also
-able to identify 2 other object allocation sites in the methods
-[Margin\>\>#insetRectangle]{.smallcaps} and
-[Number\>\>#asMargin]{.smallcaps}.
+It runs on the stock unmodified Pharo's VM.
+It instruments the object allocations methods to control their execution.
+Each time that an object allocation is produced, Illimani captures it and register useful information about the allocation context, or the object lifetimes.
+As a back-end, Illimani uses MethodProxies (cite method proxies paper and add a footnote for the github) which is a message-passing control library.
+It also uses Ephemerons to know when an object is about to be finalized, estimating the object lifetimes.
 
-***Outline.***
-Section [\[sec:memoryProfiler\]](#sec:memoryProfiler){reference-type="ref"
-reference="sec:memoryProfiler"} gives an insight of
-Illimani and its features;
-Section [\[sec:preciseProfiler\]](#sec:preciseProfiler){reference-type="ref"
-reference="sec:preciseProfiler"} explains the functioning mechanisms of
-the profiler;
-Section [\[sec:useCase\]](#sec:useCase){reference-type="ref"
-reference="sec:useCase"} presents a use case example where we profiled
-the object allocation during the execution of opening 30 Pharo tools and
-rendering each of them for 100 rendering cycles;
-Section [\[sec:relatedWork\]](#sec:relatedWork){reference-type="ref"
-reference="sec:relatedWork"} talks about the related work; and
-Section [\[sec:limitations\]](#sec:limitations){reference-type="ref"
-reference="sec:limitations"} and
-Section [\[sec:conclusion\]](#sec:conclusion){reference-type="ref"
-reference="sec:conclusion"} finalize explaining the limitations, the
-conclusion, and the future work.
+We provide 2 uses cases in which we use Illimani.
+In the first one, we profiled object allocation to detect hot allocation sites where redundant allocations were being made.
+Our target application was the Morphic UI, a Pharo framework that is used to draw the Pharo IDE.
+We were able to detect object allocation sites.
+We found a color object allocation site in the class `UITheme.
+We analyzed the allocated objects and we discover that 99,9% of the allocated colors were redundant.
+We developed a Color Palette at the domain level introducing an important missing architectural element that serves as a natural cache.
+With the Color Palette, we reduced the memory stress of the application by removing all the redundant allocations.
 
-# Illimani Memory Profiler []{#sec:memoryProfiler label="sec:memoryProfiler"}
+In the second use case, we use Illimani to profile object lifetimes in a memory-intense application.
+We choose as a case study the loading of a 500 MB dataset into a DataFrame [ cite dataframe].
+We have selected DataFrame3 library for our study because it is often used in memory-intensive applications such as machine learning, data mining, and data analysis [cite 12].
+The profiler gave us object lifetimes.
+We observed that our case study has 25% of long-lived objects that represent 40% of the allocated memory.
+Applications that have many objects that live a fairly long time suffer from performance issues [cite 13 of df paper iwst].
+Increasing the GC heap size has a significant impact on GC performance [cite df iwst 7 , 4 ].
+With this information, we decided to tune the GC parameters to see if we can get performance improvements [cite 14, 13, 6].
+We obtained improvements of up to 6.8 times compared to the default GC parameters when the number of full garbage collections is reduced
+
+# Illimani Memory Profiler
+@secIlli
 
 ::: figure*
 ![image](figures/toolOverview.png){width="0.7\\linewidth"}
