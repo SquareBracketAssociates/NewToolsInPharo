@@ -64,126 +64,107 @@ Increasing the GC heap size has a significant impact on GC performance [cite df 
 With this information, we decided to tune the GC parameters to see if we can get performance improvements [cite 14, 13, 6].
 We obtained improvements of up to 6.8 times compared to the default GC parameters when the number of full garbage collections is reduced
 
-# Illimani Memory Profiler
+### Illimani Memory Profiler
 @secIlli
 
-::: figure*
-![image](figures/toolOverview.png){width="0.7\\linewidth"}
-:::
+Illimani[^3] is a memory profiler developed for the Pharo programming language that is available under the open-source MIT license.
+Illimani profiles and extracts relevant information of the profiled application, such as the object lifetimes, objects' allocation context, memory usage, and garbage collector stress.
+It presents this information with memory usage tables, accumulative allocation evolution charts, and a heat map visualization.
+It is also possible to query the profiler to make a custom analysis.
+Illimani is capable of filtering the profiling for a given specific domain.
 
-Illimani[^3] is a memory profiler developed for the Pharo
-Smalltalk [@Duca22c] programming language that is available under an
-open-source MIT license. Pharo is a dynamically typed, purely
-object-oriented, and reflective modern programming language.
-Illimani profiles and extracts relevant information of the
-profiled application, such as the objects' allocation context, memory
-usage, and garbage collector stress. It presents this information with
-memory usage tables, accumulative allocation evolution charts, and a
-heat map visualization. It is also possible to query the profiler to
-make a custom analysis. Illimani is capable of filtering
-the profiling for a given specific domain. In this paper, we present a
-prototype version of Illimani. The user can specify which
-types of objects she wants to capture or to capture the allocations that
-a given set of classes produce.
-Figure [\[fig:toolOverview\]](#fig:toolOverview){reference-type="ref"
-reference="fig:toolOverview"} shows an overview of the user interface of
-Illimani.
+![Illimani's user interface](figures/illi-ui.png label=figIlliUI)
 
 Illimani offers the following features:
 
--   Summary and statistics report
+- Summary and statistics report
+- Memory usage and lifetime tables with grouping capabilities
+- Navigation of query results
+- Heat map visualization with the relationship: allocator - allocated
+- Accumulative allocation evolution
 
--   Memory usage tables
+#### Summary and statistics report
 
--   Navigation of query results
+Illimani provides a summary of the studied execution.
+It provides information on the total allocated objects, the allocator classes and methods, the memory usage, and the garbage collector stress.
 
--   Heat map visualization with the relationship: allocator - allocated
+Illimani shows information on how many garbage collections were made, both incremental and full, and the time spent doing garbage collections.
+Pharo has a two-generation garbage collector [cite @Unga84a].
+It has a young and an old space.
+The newly allocated objects are allocated in the young space and after they survive a threshold of garbage collections they are moved to the old space.
+The garbage collections done in the old space are orders of magnitude slower than the ones done in the young space [cite @Poli23a; @Mira18a].
 
--   Accumulative allocation evolution
+The profiler can groups the allocations by allocator classes or methods.
+It shows this information in memory tables that can be sorted by the number of allocations or by the total memory size in bytes.
 
-## Summary and Statistics
+#### Memory usage and lifetime tables with grouping capabilities
 
-Illimani provides a summary of the studied execution. It
-provides information on the total allocated objects, the allocator
-classes and methods, the memory usage, and the garbage collector stress.
+Illimani can also present the information in form of memory tables.
+These tables can show the absolute and relative number of allocation for allocation site, the size in memory of the allocations, the relative average object lifetimes, the allocated objects, among other information.
+These tables can help the developer to easily identify the hot allocation sites of the objects that have a long average lifetime.
+All of these tables can be filter to search for specific information by writing the object's class or the object's allocation site.
+They can also be sorted according to the different fields.
 
-Illimani shows information on how many garbage collections
-were made, both incremental and full, and the time spent doing garbage
-collections. Pharo has a two-generation garbage collector [@Unga84a]. It
-has a young and an old space. The newly allocated objects are allocated
-in the young space and after they survive a threshold of garbage
-collections they are moved to the old space. The garbage collections
-done in the old space are orders of magnitude slower than the ones done
-in the young space [@Poli23a; @Mira18a].
+![Memory table](figures/memory-table.png label=figMemoryTable)
 
-The profiler groups the allocations by allocator classes or methods. It
-shows this information in memory tables that can be sorted by the number
-of allocations or by the total memory size in bytes.
+Figure *@figMemoryTable* shows a memory table that groups the allocator (allocation site) with their total allocation (in total and relative numbers) and the size in memory that allocation occupy in memory (in total and relative numbers).
+The table can be sorted in terms of the allocator's name, the total or relative allocations, and in terms of total and relative memory
 
-Different executions have different allocation paths.
-Illimani provides a chart with the allocation paths for
-the top allocators. The number of top allocators is a customizable
-parameter that can be changed by the user. On the one hand,
-Figure [1](#fig:allocations-second-allocator-without-palette-by-classes){reference-type="ref"
-reference="fig:allocations-second-allocator-without-palette-by-classes"}
-shows that the class [GrafPort]{.smallcaps}, the second most allocator,
-allocates all of its objects in the first moment and then stops
-allocating. On the other hand, the other four classes allocate the
-objects continuously during the execution. These different execution
-paths are identifiable thanks to the allocation path chart.
+![Objects lifetime table](figures/lifetimes-table.png label=figLifetimesTable)
 
-![The 5 top most allocator
-classes](figures/allocations-second-allocator-without-palette-by-classes.pdf){#fig:allocations-second-allocator-without-palette-by-classes
-width="1.0\\linewidth"}
+Figure *@figLifetimesTable* shows the objects lifetime information in a table.
+It groups the allocated object class by its average lifetime, percentage of allocations and the relative size of memory of all the allocations.
+Similary to the previous one, it can be sorted by any of the table fields.
 
-## Allocation queries
+#### Navigation of query results
 
-Illimani gives access to the raw information of the
-allocated objects such as the allocator class and method, the object's
-total size in memory, the object's allocation time, and its allocation
-context stack. Pharo supports full-stack reification thanks to its
-reflective properties. Illimani uses this language
-property to copy the full execution stack of each one of the
-allocations. The user can query Illimani to extract this
-information and to make a custom analysis. We developed custom data
-structures with constant time insertion and accessing to support the
-queries.
+Illimani gives access to the raw information of the allocated objects such as the object lifetimes, the allocator class and method, the object's total size in memory, the object's allocation time, and its allocation context stack.
+Pharo supports full-stack reification thanks to its reflective properties.
+Illimani uses this language property to get all the senders that led to that object allocation.
+The user can query Illimani to extract this information and to make a custom analysis.
+We developed custom data structures with constant time insertion and accessing to support the queries.
 
-```
+```caption=Querying the profiler
 "Allocations bigger than 4 KB"
 profiler objectAllocations select: [ :e |
     e totalSizeInBytes > 4096 ].
+
 "Most allocator methods grouped allocations"
-profiler allocationsByMethod
-    first groupedAllocations.
+profiler allocationsByMethod first groupedAllocations.
+
+"Objects with a lifetime or more than 1 second"
+profiler objectAllocations select: [ :e | e lifetimeAsDuration > 1 second ]
 ```
 
-## Heat map
+#### Heat map
 
-Illimani presents the information with a heat map. It
-shows the relationship between the most allocator classes, or methods,
-and the most allocated objects. Key questions developers ask about
-memory are related to who is responsible for most creating instances and
-of each class, or method [@Sill05a]. Heat map visualizations are
-particularly adapted to display such relationships. Their matrix
-architecture supports the identification of key players: most created
-vs. most creating classes per entity [@Pauw02a; @Pauw00a; @Pauw94a].
+Illimani can presents the allocation site information with a heat map visualization.
+It shows the relationship between the most allocator methods and the most allocated objects.
+Key questions developers ask about memory are related to who is responsible for most creating instances and of each class, or method [cite @Sill05a].
+Heat map visualizations are particularly adapted to display such relationships.
+Their matrix architecture supports the identification of key players: most created vs. most creating classes per entity [cite @Pauw02a; @Pauw00a; @Pauw94a].
 
-The most allocators are ordered from top to bottom, the top is the one
-that allocates the most and the bottom one is the one that allocates the
-less. The allocated classes are ordered from right, the most allocated,
-to the left, the less allocated. Illimani groups the
-allocations by classes and by methods. This heat map supports a
-drill-down version where methods creating most objects are displayed
-instead of the classes: Figure [2](#fig:heatmapNew){reference-type="ref"
-reference="fig:heatmapNew"} shows that method
-[Margin\>\>#insetRectangle]{.smallcaps} is the one creating all
-rectangle objects.
+The most allocators are ordered from top to bottom, the top is the one that allocates the most and the bottom one is the one that allocates the less.
+The allocated classes are ordered from left, the most allocated, to the right, the less allocated.
+This heat map supports a drill-down version where methods creating most objects are displayed instead of the classes:
+Figure *@figHeatmapNew* shows that method `Margin>>#insetRectangle` is the one creating all rectangle objects.
 
-![Allocator methods heat map](figures/heatmapNew.pdf){#fig:heatmapNew
-width="1.0\\linewidth"}
+![Allocator methods heat map](figures/heatmapNew.pdf label=figHeatmapNew)
 
-# Precise memory profiling []{#sec:preciseProfiler label="sec:preciseProfiler"}
+#### Accumulative allocation evolution
+
+Different executions have different allocation paths.
+Illimani provides a chart with the allocation paths for the top allocators.
+The number of top allocators is a customizable parameter that can be changed by the user.
+
+![The 5 top most allocator classes](figures/allocations-second-allocator-without-palette-by-classes.pdf label=figAllocationsWithoutPaletteByClasses)
+
+On the one hand, Figure *@figAllocationsWithoutPaletteByClasses* shows that the class `GrafPort`, the second most allocator, allocates all of its objects in the first moment and then stops allocating.
+On the other hand, the other four classes allocate the objects continuously during the execution.
+These different execution paths are identifiable thanks to the allocation path chart.
+This accumulative chart is available in the Illimani's UI.
+
+## Precise memory profiling []{#sec:preciseProfiler label="sec:preciseProfiler"}
 
 In Pharo, almost all computations are done by sending messages (invoking
 methods) [@Berg11d]. Allocating an object is done also by sending a
