@@ -1,29 +1,29 @@
----
-abstract: |
-  Modern programming languages provide automatic memory management with
-  an efficient garbage collector making the memory management of an
-  application transparent to the developer. There is a need for
-  practical tools to support developers in their understanding of the
-  memory consumption of their applications. In this paper, we present a
-  prototype version of Illimani: a precise object
-  allocation profiler. It has a rich object model that provides
-  information about the objects' allocation context, the evolution of
-  memory usage, and garbage collector stress.
-
-  We were able to find an object allocation site in the class
-  [UITheme]{.smallcaps} that was making 99,9% redundant allocations. We
-  developed a Color Palette cache at the domain level that removed all
-  the redundant allocations. We were also able to identify 2 other
-  object allocation sites in the methods
-  [Margin\>\>#insetRectangle]{.smallcaps} and
-  [Number\>\>#asMargin]{.smallcaps}.
-
----
-
 ## Illimani: A Memory Profiler
 @cha:illimani
 
 _Authors:_ Sebastian Jordan Montaño -- Univ. Lille, Inria, CNRS, Centrale Lille, UMR 9189 CRIStAL, Lille, France -- sebastian.jordan@inria.fr and Guillermo Polito -- Univ. Lille, Inria, CNRS, Centrale Lille, UMR 9189 CRIStAL, Lille, France -- guillermo.polito@inria.fr and Stéphane Ducasse -- Univ. Lille, Inria, CNRS, Centrale Lille, UMR 9189 CRIStAL, Lille, France -- stephane.ducasse@inria.fr and Pablo Tesone -- Univ. Lille, Inria, CNRS, Centrale Lille, UMR 9189 CRIStAL, Lille, France -- pablo.tesone@inria.fr
+
+### Abstract
+
+Modern programming languages often feature automatic memory management with efficient garbage collectors, which aims to make memory management transparent to developers.
+However, developers still require practical tools to gain insights into their applications' memory consumption.
+In this chapter, we introduce Illimani: a set of mememory profilers designed to enhance memory profiling and garbage collection (GC) performance.
+ILLIMANI provides detailed information about object allocation contexts, memory usage evolution, and GC stress.
+
+We explain how Illimani works, we present its API and we provide two uses cases in which we use Illimani in real-life applications.
+
+Our analysis using ILLIMANI revealed a critical object allocation site in the class `UITHEME`, which was responsible for 99.9% of redundant allocations.
+To address this, we developed a Color Palette cache at the domain level, effectively eliminating these redundant allocations
+Additionally, we identified two other significant allocation sites associated with the methods `MARGIN>>#insetRectangle` and `NUMBER>>#asMargin`.
+
+In our second analysis, we used the object lifetime to analyze object lifetimes without requiring modifications to the Virtual Machine.
+Our profiler, based on ephemerons and method proxies, tracks the duration of object allocations.
+We applied this tool to a DataFrame application, observing a substantial number of long-lived objects.
+By using this information to tune GC parameters, we achieved performance improvements of up to 6.8 times compared to default settings.
+
+Together, these tools provide valuable insights for optimizing GC performance and application efficiency.
+ILLIMANI helps in identifying and resolving redundant allocations.
+It also offers actionable data for fine-tuning GC parameters and improving overall execution time.
 
 ### Introduction
 @secIntro
@@ -400,31 +400,111 @@ Allocated Objects
 
 **Summary:** Illimani reports other two object allocation sites that allocate objects of type [Rectangle]{.smallcaps} and [Margin]{.smallcaps} that represent 64% of the allocations.
 
+#### Use case: Improving DataFrame performance through lifetime profiling
+
+We evaluated our profiler by profiling the execution of loading a 500 MB CSV file into a DataFrame.
+We choose DataFrame as our target application because it is a memory-intensive application that supports loading big files to do data engineering and machine learning.
+
+We applied the following methodology for using the object lifetimes profiler:
+We profile the execution of DataFrame and we then benchmark it to know how much time was spent on garbage collections.
+Then, we choose non-default GC parameters taking into consideration the object lifetimes and the GC spent time.
+If the profiler reports a significant quantity of long-lived objects, we choose non-default GC parameters that increase the memory heap and reduce the number of full garbage collections.
+With these custom GC parameters, we benchmark again our target application.
+We finally validate our profiler comparing the performance with the tuned GC parameters against the default ones.
+
+##### Lifetime profiling results
+
+The profiler gives a density chart of the object lifetimes.
+We grouped the object lifetimes by intervals of one second.
+All objects whose lifetime duration has the same second will be in the same bucket.
+In Figure *@figDFLifetimes*, we calculated the density as a function of the actual memory size occupied by the objects.
+We can observe that around 40% of memory stayed referenced for a long time.
+
+![Object lifetimes profile by memory for a 500MB dataset](figures/df-lifetimes.pdf label=figDFLifetimes)
+
+In Figure  *@figDFLifetimesTwo* we calculated the density but in function by the number of objects instead of the occupied memory.
+Crossing this information with Figure 4 we get that 25% of the objects that represent 40% of the GC memory stay referenced for a long time.
+
+![Object lifetimes profile for a 500MB dataset by number of objects](figures/df-lifetimes2.pdf label=figDFLifetimesTwo)
+
+##### 4.3. Benchmarking DataFrame
+
+We benchmarked the loading of a DataFrame but this time without the instrumentation.
+We used the default GC parameters when running these benchmarks.
+To improve the reproducibility of benchmarking, we used the best developer techniques for the benchmarks [cite 16 of df paper]: we cut the internet connexion and stopped all non-vital applications.
+We run each of the benchmarks n-times and then we reported the average execution time with the standard deviation.
+We benchmarked the loading of 3 CSV files of different sizes: 500 MB, 1.6 GB, and 3.1 GB.
+We present the results of the benchmarks for the 3 different CSV files in Table *@benchmarkGCTime*.
+
+@tabBenchmarkGCTime
+| **Dataset** | **# of scavengers** | **# of full GCs** | **GC time**     | **Total time**     | **GC time in %** |
+|-------------|----------------------|-------------------|-----------------|--------------------|------------------|
+| 500 MB      | 266                  | 18                | 11 sec          | 1 min 11 sec       | 15%              |
+| 1.6 GB      | 304                  | 36                | 1 min           | 4 min 8 sec        | 22%              |
+| 3.1 GB      | 1143                 | 309               | 1 h 3 min 13 sec| 1 h 11 min 5 sec   | 89%              |
+
+##### Tuning garbage collector parameters
+
+Generational GCs suffer from poor performance when dealing with memory-intensive applications that generate numerous intermediate objects, which live a fairly long time under the default GC parameters [cite 17, 13 ].
+Our profiler showed that DataFrame is an application that produces long-lived objects.
+DataFrame has 25% of the objects that represent 40% of the allocated memory that live for a fairly long time (Figures *@figDFLifetimes*, *@figDFLifetimesTwo*).
+One can reduce GC time by tuning the GC parameters [cite 6].
+The benchmarks exhibited optimization opportunities by reducing the garbage collection time.
+Generational GCs are not optimized for applications with a substantial number of long-lived objects.
+Instead, they are specifically configured for applications where objects tend to die young [ cite 13].
+We discussed with Pharo experts about Pharo’s GC implementation details.
+With this internal knowledge of Pharo’s GC implementation and the DataFrame internals, we chose the a custom GC parameters.
+We chose by hand this custom GC parameters that we knew will increase the heap size and reduce the number of garbage collections.
+The Pharo GC has 4 available customizable parameters.
+In Pharo, the heap size can be seen as the sum of the new and the old space. One can control the heap size by tuning these customizable GC parameters.
+
+- Eden size represents 5/7 of the new space and it is where the objects are allocated; the other 2/7 of space is used for copying objects.
+- Growth headroom is the minimum amount of space the GC will request to the operating system to allocate
+- Shrink threshold is the amount of free space that the GC will manage before giving it back to the OS.
+- GC ratio is a percentage that triggers a full garbage collection when the heap will grow that percentage.
+
+_Note:_ For simplicity, in this section we only use one custom GC parameter.
+Normally, one needs to use several and then comparing which one produces the best performance improvement.
+
+##### Results 
+
+Then as explained in the methodology, we benchmarked the loading of the DataFrame with the 3 different CSV files with the custom GC parameter configuration to see if we reduce the garbage collection time.
+We obtained improvements of up to 6.8 times compared to the default GC parameter
+
+In the following tables, we present the results that we obtained re-running the 3 benchmarks with the custom GC configurations.
+For the 500 MB CSV, we got from the benchmark in Table *@tabBenchmarkGCTime* that 15% of the time is spent on garbage collecting.
+
+We increased the performance up to 1.2 times for the 500 MB CSV file.
+For the 1.6 GB CSV file, we increased the performance up to 1.2 times and 22% of the execution time passed doing garbage collections.
+
+For the last CSV file, the one of 3.1 GB, we observe that we increased the performance up to 6.8 times.
+This enhancement can be attributed to the fact that, for this 3.1 GB, 89% of the execution time is spent doing garbage collections. The custom configuration that we chose has a larger memory footprint compared to the default parameters.
+
+Result with the custom GC parameter
+
+@tabDFResults
+| **Dataset CSV file** | **GC spent time**    | **Total execution time** | **Improved performance** | 
+| -------------------- | ---------------------| ------------------------ |------------------------- |
+| 500 MB               | 2.17 sec             | 60.58 sec                | 1.2 x                    |
+| 1.6 GB               | 12.93 sec            | 3 min 20 sec             | 1.2 x                    |
+| 3.1 GB               | 1 min 47 sec         | 9 min 42 sec             | 6.8 x                    |
+
 # Conclusion and Future Work []{#sec:conclusion label="sec:conclusion"}
 
-Illimani is a memory profiler that can precisely capture
-object allocations. It provides a rich object model that allows a user
-to query and group the object allocations. Illimani also
-shows the information with tables and visualizations. We profiled the
-execution of opening 30 Pharo tools: Iceberg, Playground, and the
-Inspector. We opened 10 times each making 30 in total and we let render
-each of the applications for 100 Morphic cycles. We were able to detect
-object allocation sites. Illimani reported that the class
-[UITheme]{.smallcaps} was making 99,9% redundant object allocations. We
-were able to fix the excessive allocations by introducing the
-architectural concept of a Color Palette removing all the redundant
-allocations that the [UITheme]{.smallcaps} was making.
+In this chapter, we presented Illimani, a sophisticated memory profilers set that accurately captures object allocations, object lifetimes, and provides a rich object model for querying and grouping these allocations
+Illimani is also a memory profiler framework that users can use to craft their own memory profilers.
+We showed the tool, along with its functionalities and its API.
+We conducted two detailed use cases in which we use Illimani to tackle and solve real application memory and performance issues. 
 
-We were able to identify other two allocation sites related to the
-*MorphicUI* framework. For the same execution of opening the 30 Pharo
-tools, 1,565,352 objects were allocated in total and the classes
-[Rectangle]{.smallcaps} and [Margin]{.smallcaps} are the ones that are
-allocated the most, summing 64% of all the allocations. The methods
-[Margin\>\>#insetRectangle]{.smallcaps} and
-[Number\>\>#asMargin]{.smallcaps} are the two methods producing all of
-those allocations.
+First, we utilized the allocation site profiler of Illimani.
+By profiling the execution of opening 30 Pharo tools—Iceberg, Playground, and the Inspector, each opened 10 times and rendered for 100 Morphic cycles—we identified significant allocation patterns.
+Illimani revealed that the class `UITheme` was responsible for 99.9% of redundant object allocations.
+This insight led to a solution where we introduced a Color Palette architectural concept to eliminate these redundant allocations.
+Additionally, we discovered two other significant allocation sites within the MorphicUI framework.
+Out of 1,565,352 total allocations, the classes `Rectangle` and `Margin` were responsible for 64% of these allocations, with methods `Margin>>#insetRectangle and `Number>>#asMargin` being the primary contributors.
 
-There is previous work done on energy profiling in Pharo [@Berg16b]. We
-want to continue this work to include energy measurements along with the
-object allocations. We will also develop a solution at the bytecode
-level to be able to wrap the primitive methods too.
+Our second analysis was done using the object lifetimes profiler of Illimani.
+This profiler was applied to a DataFrame loading three large CSV files.
+Our findings revealed that 25% of the objects, which represent 40% of the memory, had relatively long lifetimes.
+Based on these insights, and after discussing with Pharo experts about the GC implementation, we tested one different GC parameter configuration that increased the heap size.
+Benchmarking these configurations showed performance improvements of up to 6.8 times compared to the default GC parameters.
