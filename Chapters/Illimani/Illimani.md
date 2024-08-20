@@ -28,7 +28,7 @@ It also offers actionable data for fine-tuning GC parameters and improving overa
 ### Introduction
 @secIntro
 
-Modern programming languages such as Pharo offer automatic memory management through garbage collectors (GC) [ 1 ].
+Modern programming languages such as Pharo offer automatic memory management through garbage collectors (GC).
 This takes the responsibility of allocating objects and freeing the allocated memory from of the developer.
 Pharo has a two-generation GC with a scavenging algorithm for the new generation and a stop-the-world mark-and-compact algorithm for the old generation [2, 3 ].
 The Pharo GC periodically traverses the memory to detect the objects that are not reachable (an object is not reachable when it is no longer accessible nor usable). After the memory traversal, the GC frees the unreachable objects’ memory.
@@ -37,7 +37,8 @@ There are some applications in which a significant part of the execution time is
 The default GC parameters are rarely ideal for any given application [4].
 Consequently, there is considerable potential for optimizing such applications to mitigate garbage collection overhead.
 
-In this chapter, we present Illimani : a precise memory profiler (cite illimani papers and GitHub) framework for the Pharo programming language [cite @Duca22c].
+In this chapter, we present Illimani : a precise memory profiler framework for the Pharo programming language.
+It is available in [github.com/jordanmontt/illimani-memory-profiler](https://github.com/jordanmontt/illimani-memory-profiler)
 It serves to profile object allocations that are produced during the execution of an application.
 It can also profile object lifetimes by attaching an ephemeron to the allocations.
 It provides information about the allocation context for each of the allocated objects, the objects types, their size in memory, object lifetimes, the evolution of memory usage, garbage collector stress, among others.
@@ -46,7 +47,7 @@ It also has a sampling mechanism, the user can configure a sampling rate to not 
 It runs on the stock unmodified Pharo's VM.
 It instruments the object allocations methods to control their execution.
 Each time that an object allocation is produced, Illimani captures it and register useful information about the allocation context, or the object lifetimes.
-As a back-end, Illimani uses MethodProxies (cite method proxies paper and add a footnote for the github) which is a message-passing control library.
+As a back-end, Illimani uses MethodProxies ([github.com/pharo-contributions/MethodProxies](https://github.com/pharo-contributions/MethodProxies)) which is a message-passing control library.
 It also uses Ephemerons to know when an object is about to be finalized, estimating the object lifetimes.
 
 We provide 2 uses cases in which we use Illimani.
@@ -59,13 +60,14 @@ We developed a Color Palette at the domain level introducing an important missin
 With the Color Palette, we reduced the memory stress of the application by removing all the redundant allocations.
 
 In the second use case, we use Illimani to profile object lifetimes in a memory-intense application.
-We choose as a case study the loading of a 500 MB dataset into a DataFrame [ cite dataframe].
-We have selected DataFrame3 library for our study because it is often used in memory-intensive applications such as machine learning, data mining, and data analysis [cite 12].
+We choose as a case study the loading of a 500 MB dataset into a DataFrame.
+DataFrame is available at [github.com/PolyMathOrg/DataFrame](https://github.com/PolyMathOrg/DataFrame).
+We have selected DataFrame3 library for our study because it is often used in memory-intensive applications such as machine learning, data mining, and data analysis.
 The profiler gave us object lifetimes.
 We observed that our case study has 25% of long-lived objects that represent 40% of the allocated memory.
-Applications that have many objects that live a fairly long time suffer from performance issues [cite 13 of df paper iwst].
-Increasing the GC heap size has a significant impact on GC performance [cite df iwst 7 , 4 ].
-With this information, we decided to tune the GC parameters to see if we can get performance improvements [cite 14, 13, 6].
+Applications that have many objects that live a fairly long time suffer from performance issues.
+Increasing the GC heap size has a significant impact on GC performance.
+With this information, we decided to tune the GC parameters to see if we can get performance improvements.
 We obtained improvements of up to 6.8 times compared to the default GC parameters when the number of full garbage collections is reduced.
 
 **Chapter's outline** TO DO
@@ -79,11 +81,11 @@ It presents this information with memory usage tables, accumulative allocation e
 It is also possible to query the profiler to make a custom analysis.
 Illimani is capable of filtering the profiling for a given specific domain.
 
-In Pharo, almost all computations are done by sending messages [cite @Berg11d].
+In Pharo, almost all computations are done by sending messages.
 Allocating an object is done also by sending a message.
 In Pharo 13, we identified 14 allocation methods.
 
-We instrumented these 14 allocator methods to intercept whenever they are invoked using MethodProxies (cite).
+We instrumented these 14 allocator methods to intercept whenever they are invoked using MethodProxies.
 We use MethodProxies as the instrumentation back-end of Illimani.
 MethodProxies allows one to decorate and control the execution of a method: execution an action before and after a method's execution.
 When a sender requests an object allocation, the instrumentation captures the execution before the object is returned to the sender.
@@ -227,10 +229,10 @@ Illimani provides a summary of the studied execution.
 It provides information on the total allocated objects, the allocator classes and methods, the memory usage, and the garbage collector stress.
 
 Illimani shows information on how many garbage collections were made, both incremental and full, and the time spent doing garbage collections.
-Pharo has a two-generation garbage collector [cite @Unga84a].
+Pharo has a two-generation garbage collector.
 It has a young and an old space.
 The newly allocated objects are allocated in the young space and after they survive a threshold of garbage collections they are moved to the old space.
-The garbage collections done in the old space are orders of magnitude slower than the ones done in the young space [cite @Poli23a; @Mira18a].
+The garbage collections done in the old space are orders of magnitude slower than the ones done in the young space.
 
 The profiler can groups the allocations by allocator classes or methods.
 It shows this information in memory tables that can be sorted by the number of allocations or by the total memory size in bytes.
@@ -278,9 +280,9 @@ profiler objectAllocations select: [ :e | e lifetimeAsDuration > 1 second ]
 
 Illimani can presents the allocation site information with a heat map visualization.
 It shows the relationship between the most allocator methods and the most allocated objects.
-Key questions developers ask about memory are related to who is responsible for most creating instances and of each class, or method [cite @Sill05a].
+Key questions developers ask about memory are related to who is responsible for most creating instances and of each class, or method.
 Heat map visualizations are particularly adapted to display such relationships.
-Their matrix architecture supports the identification of key players: most created vs. most creating classes per entity [cite @Pauw02a; @Pauw00a; @Pauw94a].
+Their matrix architecture supports the identification of key players: most created vs. most creating classes per entity.
 
 The most allocators are ordered from top to bottom, the top is the one that allocates the most and the bottom one is the one that allocates the less.
 The allocated classes are ordered from left, the most allocated, to the right, the less allocated.
@@ -431,7 +433,7 @@ Crossing this information with Figure 4 we get that 25% of the objects that repr
 
 We benchmarked the loading of a DataFrame but this time without the instrumentation.
 We used the default GC parameters when running these benchmarks.
-To improve the reproducibility of benchmarking, we used the best developer techniques for the benchmarks [cite 16 of df paper]: we cut the internet connexion and stopped all non-vital applications.
+To improve the reproducibility of benchmarking, we used the best developer techniques for the benchmarks: we cut the internet connexion and stopped all non-vital applications.
 We run each of the benchmarks n-times and then we reported the average execution time with the standard deviation.
 We benchmarked the loading of 3 CSV files of different sizes: 500 MB, 1.6 GB, and 3.1 GB.
 We present the results of the benchmarks for the 3 different CSV files in Table *@benchmarkGCTime*.
@@ -445,13 +447,13 @@ We present the results of the benchmarks for the 3 different CSV files in Table 
 
 ##### Tuning garbage collector parameters
 
-Generational GCs suffer from poor performance when dealing with memory-intensive applications that generate numerous intermediate objects, which live a fairly long time under the default GC parameters [cite 17, 13 ].
+Generational GCs suffer from poor performance when dealing with memory-intensive applications that generate numerous intermediate objects, which live a fairly long time under the default GC parameters.
 Our profiler showed that DataFrame is an application that produces long-lived objects.
 DataFrame has 25% of the objects that represent 40% of the allocated memory that live for a fairly long time (Figures *@figDFLifetimes*, *@figDFLifetimesTwo*).
-One can reduce GC time by tuning the GC parameters [cite 6].
+One can reduce GC time by tuning the GC parameters.
 The benchmarks exhibited optimization opportunities by reducing the garbage collection time.
 Generational GCs are not optimized for applications with a substantial number of long-lived objects.
-Instead, they are specifically configured for applications where objects tend to die young [ cite 13].
+Instead, they are specifically configured for applications where objects tend to die young.
 We discussed with Pharo experts about Pharo’s GC implementation details.
 With this internal knowledge of Pharo’s GC implementation and the DataFrame internals, we chose the a custom GC parameters.
 We chose by hand this custom GC parameters that we knew will increase the heap size and reduce the number of garbage collections.
