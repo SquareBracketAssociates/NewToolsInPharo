@@ -28,12 +28,16 @@ _Authors:_ Sebastian Jordan Montaño -- Univ. Lille, Inria, CNRS, Centrale Lille
 ### Introduction
 @secIntro
 
-Modern programming languages, such as Java, Python, or Pharo, provide automatic memory management with an efficient garbage collector.
-This makes the memory management of an application transparent to the developer.
-Debugging memory issues is known for being a tedious activity [@Chis11a].
-There is a need for practical tools to support developers in their understanding of the memory consumption of their applications.
+Modern programming languages such as Pharo offer automatic memory management through garbage collectors (GC) [ 1 ].
+This takes the responsibility of allocating objects and freeing the allocated memory from of the developer.
+Pharo has a two-generation GC with a scavenging algorithm for the new generation and a stop-the-world mark-and-compact algorithm for the old generation [2, 3 ].
+The Pharo GC periodically traverses the memory to detect the objects that are not reachable (an object is not reachable when it is no longer accessible nor usable). After the memory traversal, the GC frees the unreachable objects’ memory.
 
-In this chapter, we present Illimani : a precise memory profiler (cite illimani papers and GitHub) framework for the Pharo programming language [@Duca22c].
+There are some applications in which a significant part of the execution time is spent in garbage collections.
+The default GC parameters are rarely ideal for any given application [4].
+Consequently, there is considerable potential for optimizing such applications to mitigate garbage collection overhead.
+
+In this chapter, we present Illimani : a precise memory profiler (cite illimani papers and GitHub) framework for the Pharo programming language [cite @Duca22c].
 It serves to profile object allocations that are produced during the execution of an application.
 It can also profile object lifetimes by attaching an ephemeron to the allocations.
 It provides information about the allocation context for each of the allocated objects, the objects types, their size in memory, object lifetimes, the evolution of memory usage, garbage collector stress, among others.
@@ -62,7 +66,9 @@ We observed that our case study has 25% of long-lived objects that represent 40%
 Applications that have many objects that live a fairly long time suffer from performance issues [cite 13 of df paper iwst].
 Increasing the GC heap size has a significant impact on GC performance [cite df iwst 7 , 4 ].
 With this information, we decided to tune the GC parameters to see if we can get performance improvements [cite 14, 13, 6].
-We obtained improvements of up to 6.8 times compared to the default GC parameters when the number of full garbage collections is reduced
+We obtained improvements of up to 6.8 times compared to the default GC parameters when the number of full garbage collections is reduced.
+
+**Chapter's outline** TO DO
 
 ### Illimani Memory Profiler
 @secIlli
@@ -85,7 +91,125 @@ Inside the instrumentation, we capture the exact allocation time and an object�
 The MethodProxies architecture ensures that the code will be uninstrumented after the profiling is finished.
 None of the allocations that are made in the process of extracting the information are intercepted.
 
-### A glance over the UI
+Illimani is also a framework of memory profilers.
+A user can implement his own profiler by subclassing the `IllAbstractProfiler` class and defining the few missing methods
+Especially, the `internalRegisterAllocation:` method.
+The `internalRegisterAllocation:` method will be called each time that an allocation is produced (or when sampling, each time that the sampling rates matches) with the newly allocated object as a parameter.
+You can the `IllAllocationRateProfiler` class as an example of a very simple memory profiler.
+
+Tthe profiler is independent from the UI, you can access to the same statistics and information, with out without the UI.
+See the protocol `accessing - statistics` in the profiler to see the methods.
+Also, the profiler has a statistics model that groups and sorts the allocation by class and by methods.
+
+By default, when loading Illimani, it provides three implemented profilers: - allocation site memory profiler, - a object lifetimes profiler, - and an allocation rate profiler.
+The allocation site profiler `IllAllocationSiteProfiler` gives you information about the allocation sites and where the objects where produced in your application.
+The object lifetimes profiler `IllObjectLifetimesProfiler` gives you information about how much time did the objects lived, and about how many GC cycles (both scavenges and full GC) they survived.
+The allocation rate profiler `IllAllocationRateProfiler` simply tells you the number of allocation and the duration of the execution.
+
+#### Quick Getting Started
+
+Profiling a given code snippet
+
+```
+profiler
+	profileOn: [ 15 timesRepeat: [ StPlaygroundPresenter open close ] ] ;
+	open;
+	yourself
+```
+
+Profiling the Pharo IDE activity for a given amount of time
+
+```
+profiler
+	profileFor: 6 seconds;
+	open;
+	yourself
+```
+
+Example 1, using the allocation site profiler for profiling the Pharo IDE activity
+
+```
+IllAllocationSiteProfiler new
+	copyExecutionStack;
+	profileFor: 6 seconds;
+	open;
+	yourself
+```
+
+Example 2, using the object lifetimes profiler on a code snippet:
+
+```
+IllObjectLifetimesProfiler new
+	profileOn: [ 15 timesRepeat: [ StPlaygroundPresenter open close ] ] ;
+	open;
+	yourself
+```
+
+#### Common API
+
+In this section, we will describe the Illimani's API.
+This API is generic, meaning that it works for all the available profiler, and the future ones too.
+
+##### Profile a code snippet or the Pharo IDE
+
+You can decide both to profile a given method block or just watching the activity of the image for some time.
+
+```
+"With this the profiler will block the ui and you will only capture the objects created by your code snippet"
+profiler profileOn: [ anObject performSomeAction ].
+
+"With this the profiler with not block the UI nor the image. So, you will capture all the allocations of the image"
+profiler profileFor: 2 seconds.
+```
+
+##### Profiler manual API
+
+For starting the stoping the profiling manually. This can be useful if you don't know how long your program will run and you need to interact with the Pharo's IDE.
+
+```
+profiler startProfiling.
+profiler stopProfiling.
+```
+
+##### Open the GUI
+
+You can open the ui at any time with the message `open` (even if the profiler is still profiling)
+
+```
+profiler open.
+```
+
+### Sample the allocations
+
+By default, the profiler captures 1% of the allocations. We chose this number because in our experiments we found out that the profiler producess precise results with minimal overhead with that sampling rate. You can change the sampling rate. The sampling rate needs to be a fraction.
+
+```
+"Capture 10% of the allocations"
+profiler samplingRate: 1/10.
+
+"Capture 100% of the allocations"
+profiler samplingRate: 1.
+```
+
+##### Export the profiled data to files
+
+You can export the data to csv and json files by doing:
+
+```
+profiler exportData
+```
+
+This will create a csv file with all the information about the allocated objects, and some other auxiliary files in json and csv. This auxiliary files can be the meta data about the total profiled time, the gc activity, etc.
+
+##### Monitor the GC activity
+
+You can monitor the GC activity while the profiler is profiling with the message `monitorGCActivity`. This will fork a process that will take GC statistics once per second. Then, when exporting the profiler data, two csv files will be exported containing both the scavenges and full GCs. By default, the GC monitoring is disabled.
+
+```
+profiler monitorGCActivity
+```
+
+### A glance over the functionalities
 
 ![Illimani's user interface](figures/illi-ui.png label=figIlliUI)
 
@@ -178,7 +302,14 @@ On the other hand, the other four classes allocate the objects continuously duri
 These different execution paths are identifiable thanks to the allocation path chart.
 This accumulative chart is available in the Illimani's UI.
 
-### Use Case: Identifying Allocation Sites
+### Using Illimani in real life: use cases
+@secUseCase
+
+In this section we will describe two uses cases in which we use Illimani on real-life application to detect and fix memory issues.
+We will start by using the allocation site profiler to identify hot allocation sites related to the Pharo's IDE.
+Then, we will use the object lifetimes profiler to detect an memory performance issue in a memory-intensive application.
+
+#### Use Case: Identifying Allocation Sites
 @secUseCaseColorPalette
 
 A Pharo expert had a hint about a memory leak of objects of the type `Color`.
@@ -221,7 +352,7 @@ Top 5 color allocations when opening 30 Pharo tools
 
 **Summary:** Using Illimani we identified an allocation site in the class `PharoDarkTheme` that was allocating 66%of all the colors with 99,9% redundant allocations.
 
-#### Color Palette
+##### Color Palette
 
 Looking at the implementation of `UITheme` we identified the cause of the redundant allocations: each time that a user asks for a color, the `UITheme` class creates a new instance of it.
 We developed a Color Palette as a solution.
@@ -245,7 +376,7 @@ Object Allocations in Baseline vs Color Palette implementation
 
 **Summary:** With the Color Palette implementation the `PharoDarkTheme` class does not longer allocates redundant colors.
 
-## Other allocation sites
+##### Other allocation sites
 
 We profiled the same execution setup, opening 30 Pharo tools, this time not filtering the allocated objects but capturing all of the allocations.
 We observe in Table *@taballobjectallocations* that the classes `Rectangle` and `Margin` are the ones that are allocated the most, summing 64% of all the allocations between them.
