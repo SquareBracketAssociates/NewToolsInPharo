@@ -1,4 +1,4 @@
-name: Book with Pillar
+name: Pillar >10
 
 on:
   push:
@@ -15,4 +15,4 @@ jobs:
   build:
     uses: SquareBracketAssociates/BookBuilderDashboard/.github/workflows/main.yml@newVersionOfPillar
     with:
-      bookname: bkTemplate
+      bookname: NewToolsInPharo
