@@ -245,14 +245,14 @@ These tables can help the developer to easily identify the hot allocation sites 
 All of these tables can be filter to search for specific information by writing the object's class or the object's allocation site.
 They can also be sorted according to the different fields.
 
-![Memory table](figures/memory-table.png label=figMemoryTable)
+![Memory table. %anchor=figMemoryTable](figures/memory-table.png)
 
-Figure *@figMemoryTable* shows a memory table that groups the allocator (allocation site) with their total allocation (in total and relative numbers) and the size in memory that allocation occupy in memory (in total and relative numbers).
+Figure *@figMemoryTable@* shows a memory table that groups the allocator (allocation site) with their total allocation (in total and relative numbers) and the size in memory that allocation occupies in memory (in total and relative numbers).
 The table can be sorted in terms of the allocator's name, the total or relative allocations, and in terms of total and relative memory
 
 ![Objects lifetime table](figures/lifetimes-table.png label=figLifetimesTable)
 
-Figure *@figLifetimesTable* shows the objects lifetime information in a table.
+Figure *@figLifetimesTable* shows the object's lifetime information in a table.
 It groups the allocated object class by its average lifetime, percentage of allocations and the relative size of memory of all the allocations.
 Similary to the previous one, it can be sorted by any of the table fields.
 
@@ -278,7 +278,7 @@ profiler objectAllocations select: [ :e | e lifetimeAsDuration > 1 second ]
 
 #### Heat map
 
-Illimani can presents the allocation site information with a heat map visualization.
+Illimani can present the allocation site information with a heat map visualization.
 It shows the relationship between the most allocator methods and the most allocated objects.
 Key questions developers ask about memory are related to who is responsible for most creating instances and of each class, or method.
 Heat map visualizations are particularly adapted to display such relationships.
@@ -289,7 +289,7 @@ The allocated classes are ordered from left, the most allocated, to the right, t
 This heat map supports a drill-down version where methods creating most objects are displayed instead of the classes:
 Figure *@figHeatmapNew* shows that method `Margin>>#insetRectangle` is the one creating all rectangle objects.
 
-![Allocator methods heat map](figures/heatmapNew.pdf label=figHeatmapNew)
+![Allocator methods heat map. %anchor=figHeatmapNew](figures/heatmapNew.pdf)
 
 #### Accumulative allocation evolution
 
@@ -297,7 +297,7 @@ Different executions have different allocation paths.
 Illimani provides a chart with the allocation paths for the top allocators.
 The number of top allocators is a customizable parameter that can be changed by the user.
 
-![Allocation paths](figures/allocations-second-allocator-without-palette-by-classes.pdf label=figAllocationsWithoutPaletteByClasses)
+![Allocation paths.%anchor=figAllocationsWithoutPaletteByClasses](figures/allocations-second-allocator-without-palette-by-classes.pdf)
 
 On the one hand, Figure *@figAllocationsWithoutPaletteByClasses* shows that the class `GrafPort`, the second most allocator, allocates all of its objects in the first moment and then stops allocating.
 On the other hand, the other four classes allocate the objects continuously during the execution.
@@ -326,7 +326,7 @@ Through this we are able to control how many times each of the tools is rendered
 The tools are: Iceberg, Playground, and the Pharo Inspector.
 We opened 10 of each making 30 in total.
 
-![The 5 top most allocator classes](figures/allocations-second-allocator-without-palette-by-classes.pdf label=figTopFiveAllocators)
+![The 5 top most allocator classes. %anchor=figTopFiveAllocators](figures/allocations-second-allocator-without-palette-by-classes.pdf)
 
 Figure @figTopFiveAllocators presents an allocation paths plot for the top 5 allocator classes.
 
@@ -364,7 +364,7 @@ When the `UITheme` changes, for example changing from a dark theme to a light th
 With the Color Palette fix, we profiled again the same execution to compare the baseline implementation against the Color Palette.
 In Table  *@tabbaselinevscolorpalette* and in Figure *@figallocations-second-allocator-with-palette-by-classes* we see that with the Color Palette implementation, the `PharoDarkTheme` does no longer allocate `Color`. objects.
 
-![The 5 top most color allocator classes with the Color Palette implementation](figures/allocations-second-allocator-with-palette-by-classes.pdf label=figallocations-second-allocator-with-palette-by-classes)
+![The 5 top most color allocator classes with the Color Palette implementation. %anchor=figallocations-second-allocator-with-palette-by-classes](figures/allocations-second-allocator-with-palette-by-classes.pdf )
 
 Object Allocations in Baseline vs Color Palette implementation
 
@@ -398,14 +398,14 @@ Allocated Objects
 |       WriteStream        |   60,448     |    4%
 |   Rest of the classes     |  314,480     |   20%
 
-![Most allocators-allocated heat map](figures/heatmapNew.pdf label=figHeatmapNew)
+![Most allocators-allocated heat map. % anchor=figHeatmapNew](figures/heatmapNew.pdf)
 
 **Summary:** Illimani reports other two object allocation sites that allocate objects of type [Rectangle]{.smallcaps} and [Margin]{.smallcaps} that represent 64% of the allocations.
 
 #### Use case: Improving DataFrame performance through lifetime profiling
 
 We evaluated our profiler by profiling the execution of loading a 500 MB CSV file into a DataFrame.
-We choose DataFrame as our target application because it is a memory-intensive application that supports loading big files to do data engineering and machine learning.
+We chose DataFrame as our target application because it is a memory-intensive application that supports loading big files to do data engineering and machine learning.
 
 We applied the following methodology for using the object lifetimes profiler:
 We profile the execution of DataFrame and we then benchmark it to know how much time was spent on garbage collections.
@@ -418,11 +418,11 @@ We finally validate our profiler comparing the performance with the tuned GC par
 
 The profiler gives a density chart of the object lifetimes.
 We grouped the object lifetimes by intervals of one second.
-All objects whose lifetime duration has the same second will be in the same bucket.
+All objects whose lifetime duration has the same one second duration will be in the same bucket.
 In Figure *@figDFLifetimes*, we calculated the density as a function of the actual memory size occupied by the objects.
 We can observe that around 40% of memory stayed referenced for a long time.
 
-![Object lifetimes profile by memory for a 500MB dataset](figures/df-lifetimes.pdf label=figDFLifetimes)
+![Object lifetimes profile by memory for a 500MB dataset. %anchor=figDFLifetimes](figures/df-lifetimes.pdf)
 
 In Figure  *@figDFLifetimesTwo* we calculated the density but in function by the number of objects instead of the occupied memory.
 Crossing this information with Figure 4 we get that 25% of the objects that represent 40% of the GC memory stay referenced for a long time.
@@ -433,7 +433,7 @@ Crossing this information with Figure 4 we get that 25% of the objects that repr
 
 We benchmarked the loading of a DataFrame but this time without the instrumentation.
 We used the default GC parameters when running these benchmarks.
-To improve the reproducibility of benchmarking, we used the best developer techniques for the benchmarks: we cut the internet connexion and stopped all non-vital applications.
+To improve the reproducibility of benchmarking, we used the best developer techniques for the benchmarks: we cut the internet connection and stopped all non-vital applications.
 We run each of the benchmarks n-times and then we reported the average execution time with the standard deviation.
 We benchmarked the loading of 3 CSV files of different sizes: 500 MB, 1.6 GB, and 3.1 GB.
 We present the results of the benchmarks for the 3 different CSV files in Table *@benchmarkGCTime*.
@@ -455,8 +455,8 @@ The benchmarks exhibited optimization opportunities by reducing the garbage coll
 Generational GCs are not optimized for applications with a substantial number of long-lived objects.
 Instead, they are specifically configured for applications where objects tend to die young.
 We discussed with Pharo experts about Pharo’s GC implementation details.
-With this internal knowledge of Pharo’s GC implementation and the DataFrame internals, we chose the a custom GC parameters.
-We chose by hand this custom GC parameters that we knew will increase the heap size and reduce the number of garbage collections.
+With this internal knowledge of Pharo’s GC implementation and the DataFrame internals, we chose custom GC parameters.
+We chose by hand these custom GC parameters that we knew will increase the heap size and reduce the number of garbage collections.
 The Pharo GC has 4 available customizable parameters.
 In Pharo, the heap size can be seen as the sum of the new and the old space. One can control the heap size by tuning these customizable GC parameters.
 
@@ -491,7 +491,8 @@ Result with the custom GC parameter
 | 1.6 GB               | 12.93 sec            | 3 min 20 sec             | 1.2 x                    |
 | 3.1 GB               | 1 min 47 sec         | 9 min 42 sec             | 6.8 x                    |
 
-# Conclusion and Future Work []{#sec:conclusion label="sec:conclusion"}
+### Conclusion and Future Work
+@sec:conclusion
 
 In this chapter, we presented Illimani, a sophisticated memory profilers set that accurately captures object allocations, object lifetimes, and provides a rich object model for querying and grouping these allocations
 Illimani is also a memory profiler framework that users can use to craft their own memory profilers.
@@ -499,7 +500,7 @@ We showed the tool, along with its functionalities and its API.
 We conducted two detailed use cases in which we use Illimani to tackle and solve real application memory and performance issues. 
 
 First, we utilized the allocation site profiler of Illimani.
-By profiling the execution of opening 30 Pharo tools—Iceberg, Playground, and the Inspector, each opened 10 times and rendered for 100 Morphic cycles—we identified significant allocation patterns.
+By profiling the execution of opening 30 Pharo tools -- Iceberg, Playground, and the Inspector, each opened 10 times and rendered for 100 Morphic cycles—we identified significant allocation patterns.
 Illimani revealed that the class `UITheme` was responsible for 99.9% of redundant object allocations.
 This insight led to a solution where we introduced a Color Palette architectural concept to eliminate these redundant allocations.
 Additionally, we discovered two other significant allocation sites within the MorphicUI framework.

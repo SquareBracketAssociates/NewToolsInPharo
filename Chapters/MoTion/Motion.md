@@ -266,16 +266,18 @@ We also add here some features that are inspired by pattern matching in function
 
 - _Logical matcher_: allows the possibility of combining multiple patterns in a boolean expression.
 
-- _Negation_: may allow to express a simpler pattern when searching for bindings that do not conform to a particular criteria.
+- _Negation_: may allow one to express a simpler pattern when searching for bindings that do not conform to a particular criteria.
 
 #### Some existing Object Pattern Matching Languages
 
-We studied existing pattern matching languages to understand what features they offer. 
+We studied existing pattern-matching languages to understand what features they offer. 
 The goal of our matching language will be to offer all these features. 
 We limited ourselves to Object Oriented GPLs. 
-We considered the top OO languages used in 2022 according to *Github>https://octoverse.github.com/2022/top-programming-languages* : C#, C++, Java, Javascript, Python, Ruby, Typescript (three more languages are not OO: C, PHP, Shell). 
+We considered the top OO languages used in 2022 according to [Github](https://octoverse.github.com/2022/top-programming-languages): C#, C++, Java, Javascript, Python, Ruby, Typescript (three more languages are not OO: C, PHP, Shell). 
 We added Rust and Scala that are well known for their pattern matching capabilities. 
-And we added a library in Pharo (RBParseTreeSearcher) because this is the language we are working with.
+And we added a library in Pharo (`RBParseTreeSearcher`) because this is the language we are working with.
+
+
 
 @tabobjectLanguagesTable
 |Characteristics        |  C#  |  Java |   Pharo (4) |  Python |  Ruby |  Rust | Scala

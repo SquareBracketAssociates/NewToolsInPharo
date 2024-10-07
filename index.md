@@ -37,9 +37,9 @@ The Sample1 folder illustrates this structure, it contains:
 This book will be published via the book-on-demand program of [http://bod.fr](http://bod.fr). 
 It will be published on the Bibliotheque Nationale de France and it will be available on most public platforms such as amazon.com.
 
-S. Ducasse and T. Rakic
+S. Ducasse and G. Rakic
 
 
-<!-- <!inputFile|path=Chapters/Sample1/Sample1.md!> -->
 <!inputFile|path=Chapters/MoTion/Motion.md!>
 <!inputFile|path=Chapters/Illimani/Illimani.md!>
+<!inputFile|path=Chapters/ReEngine/ReEngine.md!>
