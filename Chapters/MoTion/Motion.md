@@ -99,9 +99,9 @@ The pattern nodes, or the nodes of the pattern graph, are represented by a set o
 When a pattern is matched to a target graph, it means that (i) every pattern node is matched to a target node of the same type, (ii) every pattern edge is matched to a target edge of the same type, (iii) all predicates are satisfied, and (iv) the logical formula is satisfied.
 This mapping of pattern variables to target graph nodes is referred to as the target nodes of the match.
 
-A vast range of data from many domains can be represented by graphs {!citation|ref=Libk16a!} where Resource Description Framework (RDF) {!citation|ref=Worl14a!} graph and Property Graph (PG) {!citation|ref=Angl17a!} are commonly used to represent this data {!citation|ref=Deut22a!}.
+A vast range of data from many domains can be represented by graphs {!citation|ref=Libk16a!} where Resource Description Framework (RDF) {!citation|ref=WS14a!} graph and Property Graph (PG) {!citation|ref=Angl17a!} are commonly used to represent this data {!citation|ref=Deut22a!}.
 
-An RDF graph is equivalent to a set of triples, of node-labeled edge-node, to represent the data {!citation|ref=Thak17a!} {!citation|ref=Deut22a!}, and SPARQL {!citation|ref=Worl13a!} is the language that is capable of handling large-scale analytical operations over RDF graphs {!citation|ref=Thak17a!}. It uses a syntax with patterns expressed in triple form (subject-predicate-object) {!citation|ref=Krau16a!} using a combination of variables and specific resources or literals. The objects and subjects match nodes, and the predicates match edges.
+An RDF graph is equivalent to a set of triples, of node-labeled edge-node, to represent the data {!citation|ref=Thak17a!} {!citation|ref=Deut22a!}, and SPARQL {!citation|ref=WS14a!} is the language that is capable of handling large-scale analytical operations over RDF graphs {!citation|ref=Thak17a!}. It uses a syntax with patterns expressed in triple form (subject-predicate-object) {!citation|ref=Krau16a!} using a combination of variables and specific resources or literals. The objects and subjects match nodes, and the predicates match edges.
 
 ```language=sql&caption=SPARQL example&label=rdfQuery
 SELECT DISTINCT ?name
@@ -222,7 +222,7 @@ Line 4 is a variable that will hold a description of the type of `obj` (line 5)
 -   Some languages allow to match an object not only on its structure, but also on the value an attribute should have.
 
 We found several libraries that complement programming languages by introducing pattern matching capabilities. 
-Tom {!citation|ref=Pier03a!} and Rascal {!citation|ref=Klin11a!} integrate with Java, and Kiama {!citation|ref=Sloa09a!} integrates
+Tom {!citation|ref=More03a!} and Rascal {!citation|ref=Klin11a!} integrate with Java, and Kiama {!citation|ref=Sloa09a!} integrates
 with Scala. 
 Tom and Rascal cover features that were not covered natively by Java like _Path traversal_, _Recursive traversal_, _Object matching_ and _Complex lists_. Kiama and Rascal enable transformation through the definition of strategies. These strategies employ pattern matching to identify the terms requiring transformation. 
 Strategy execution in Kiama can proceed in different directions either top-down or bottom-up. 
