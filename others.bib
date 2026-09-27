@@ -1,59 +1,3 @@
-@inproceedings{Danie07a,
-  title={Automated testing of refactoring engines},
-  author={Brett Daniel and Danny Dig and Kely Garcia and Darko Marinov},
-  booktitle={International Conference on Foundations of Software Engineering (FSE '07)},
-  year={2007}
-}
-
-@article{Mong14a,
-title = {Making refactoring safer through impact analysis},
-journal = {Science of Computer Programming},
-volume = {93},
-pages = {39 -- 64},
-year = {2014},
-issn = {0167 - 6423},
-doi = {https://doi.org/10.1016/j.scico.2013.11.001},
-author = {Melina Mongiovi and Rohit Gheyi and Gustavo Soares and Leopoldo Teixeira and Paulo Borba}
-}
-
-@inproceedings{Soar11a,
-  author={Soares, Gustavo and Mongiovi, Melina and Gheyi, Rohit},
-  booktitle={IEEE International Conference on Software Maintenance (ICSM)},
-  title={Identifying overly strong conditions in refactoring implementations},
-  year={2011},
-  pages={173-182},
-  doi={10.1109/ICSM.2011.6080784}}
-
-@misc{Wang24a,
-  author = {Wang, Haibo and Xu, Zhuolin and Zhang, Huaien and Tsantalis, Nikolaos and Tan, Shin Hwei},
-  title = {An Empirical Study of Refactoring Engine Bugs},
-  year = {2024},
-  url = {https://arxiv.org/abs/2409.14610}}
-
-@inproceedings{Mong16a,
-  author = {Mongiovi, Melina},
-  title = {Scaling testing of refactoring engines},
-  year = {2016},
-  isbn = {9781450342056},
-  publisher = {Association for Computing Machinery},
-  address = {New York, NY, USA},
-  url = {https://doi.org/10.1145/2889160.2891038},
-  doi = {10.1145/2889160.2891038},
-  booktitle = {International Conference on Software Engineering Companion},
-  pages = {674 -- 676},
-  numpages = {3},
-  series = {ICSE '16}
-}
-
-@article{Mong18a,
-  author={Mongiovi, Melina and Gheyi, Rohit and Soares, Gustavo and Ribeiro, Marcio and Borba, Paulo and Teixeira, Leopoldo},
-  journal={IEEE Transactions on Software Engineering},
-  title={Detecting Overly Strong Preconditions in Refactoring Engines},
-  year={2018},
-  volume={44},
-  number={5},
-  pages={429 -- 452},
-  doi={10.1109/TSE.2017.2693982}}
 
 @article{10.1145/320385.320414,
   author = {Tip, Frank and Laffra, Chris and Sweeney, Peter F. and Streeter, David},
@@ -1329,12 +1273,12 @@ possible unfavorable dependencies in the system.},
   year = {2019},
   url = {https://doi.org/10.1145/3359789.3359823},
   doi = {10.1145/3359789.3359823},
-  abstract = {Developers today have access to an arsenal of toolkits and libraries for rapid application prototyping. However, when an application loads a library, the entirety of that library's code is mapped into the address space, even if only a single function is actually needed. The unused portion is bloat that can negatively impact software defenses by unnecessarily inflating their overhead or increasing their attack surface. Recent work has explored debloating as a way of alleviating the above problems, when source code is available. In this paper, we investigate whether debloating is possible and practical at the binary level. To this end, we present Nibbler: a system that identifies and erases unused functions within shared libraries. Nibbler works in tandem with defenses like continuous code re-randomization and control-flow integrity, enhancing them without incurring additional run-time overhead. We developed and tested a prototype of Nibbler on x86-64 Linux; Nibbler reduces the size of shared libraries and the number of available functions, for real-world binaries and the SPEC CINT2006 suite, by up to 56% and 82%, respectively. We also demonstrate that Nibbler benefits defenses by showing that: (i) it improves the deployability of a continuous re-randomization system for binaries, namely Shuffler, by increasing its efficiency by 20%, and (ii) it improves certain fast, but coarse and context-insensitive control-flow integrity schemes by reducing the number of gadgets reachable through returns and indirect calls by 75% and 49% on average.},
-  address = {New York, NY, USA},
   isbn = {9781450376280},
+  address = {New York, NY, USA},
+  abstract = {Developers today have access to an arsenal of toolkits and libraries for rapid application prototyping. However, when an application loads a library, the entirety of that library's code is mapped into the address space, even if only a single function is actually needed. The unused portion is bloat that can negatively impact software defenses by unnecessarily inflating their overhead or increasing their attack surface. Recent work has explored debloating as a way of alleviating the above problems, when source code is available. In this paper, we investigate whether debloating is possible and practical at the binary level. To this end, we present Nibbler: a system that identifies and erases unused functions within shared libraries. Nibbler works in tandem with defenses like continuous code re-randomization and control-flow integrity, enhancing them without incurring additional run-time overhead. We developed and tested a prototype of Nibbler on x86-64 Linux; Nibbler reduces the size of shared libraries and the number of available functions, for real-world binaries and the SPEC CINT2006 suite, by up to 56% and 82%, respectively. We also demonstrate that Nibbler benefits defenses by showing that: (i) it improves the deployability of a continuous re-randomization system for binaries, namely Shuffler, by increasing its efficiency by 20%, and (ii) it improves certain fast, but coarse and context-insensitive control-flow integrity schemes by reducing the number of gadgets reachable through returns and indirect calls by 75% and 49% on average.},
+  numpages = {14},
   keywords = {software security, code debloating, static binary analysis},
   location = {San Juan, Puerto Rico, USA},
-  numpages = {14},
   series = {ACSAC '19}}
 
 @inproceedings{Agad19a,
@@ -1346,12 +1290,12 @@ possible unfavorable dependencies in the system.},
   year = {2019},
   url = {https://doi.org/10.1145/3359789.3359823},
   doi = {10.1145/3359789.3359823},
-  isbn = {9781450376280},
-  address = {New York, NY, USA},
   abstract = {Developers today have access to an arsenal of toolkits and libraries for rapid application prototyping. However, when an application loads a library, the entirety of that library's code is mapped into the address space, even if only a single function is actually needed. The unused portion is bloat that can negatively impact software defenses by unnecessarily inflating their overhead or increasing their attack surface. Recent work has explored debloating as a way of alleviating the above problems, when source code is available. In this paper, we investigate whether debloating is possible and practical at the binary level. To this end, we present Nibbler: a system that identifies and erases unused functions within shared libraries. Nibbler works in tandem with defenses like continuous code re-randomization and control-flow integrity, enhancing them without incurring additional run-time overhead. We developed and tested a prototype of Nibbler on x86-64 Linux; Nibbler reduces the size of shared libraries and the number of available functions, for real-world binaries and the SPEC CINT2006 suite, by up to 56% and 82%, respectively. We also demonstrate that Nibbler benefits defenses by showing that: (i) it improves the deployability of a continuous re-randomization system for binaries, namely Shuffler, by increasing its efficiency by 20%, and (ii) it improves certain fast, but coarse and context-insensitive control-flow integrity schemes by reducing the number of gadgets reachable through returns and indirect calls by 75% and 49% on average.},
-  numpages = {14},
+  address = {New York, NY, USA},
+  isbn = {9781450376280},
   keywords = {software security, code debloating, static binary analysis},
   location = {San Juan, Puerto Rico, USA},
+  numpages = {14},
   series = {ACSAC '19}}
 
 @inproceedings{Agar04a,
@@ -3804,6 +3748,23 @@ a promising direction of research.},
   title = {Determinacy in Static Analysis of jQuery},
   booktitle = {Conference on Object-Oriented Programming, Systems, Languages, and Applications},
   year = {2014}}
+
+@article{Angl17a,
+  author = {Angles, Renzo and Arenas, Marcelo and Barcel{\'o}, Pablo and Hogan, Aidan and Reutter, Juan and Vrgo{\v{c}}, Domagoj},
+  title = {Foundations of modern query languages for graph databases},
+  journal = {ACM Computing Surveys (CSUR)},
+  volume = {50},
+  pages = {1--40},
+  publisher = {ACM New York, NY, USA},
+  year = {2017},
+  number = {5}}
+
+@inproceedings{Angl18a,
+  author = {Angles, Renzo and Arenas, Marcelo and Barcel{\'o}, Pablo and Boncz, Peter and Fletcher, George and Gutierrez, Claudio and Lindaaker, Tobias and Paradies, Marcus and Plantikow, Stefan and Sequeda, Juan and others},
+  title = {G-CORE: A core for future graph query languages},
+  booktitle = {Proceedings of the 2018 International Conference on Management of Data},
+  pages = {1421--1432},
+  year = {2018}}
 
 @inproceedings{Angu18,
   author = {Angulo, Guisella and Mart\'{\i}n, Daniel San and Santos, Bruno and Ferrari, Fabiano Cutigi and de Camargo, Valter Vieira},
@@ -7383,6 +7344,15 @@ proneness.},
   title = {Software Architecture in Practice},
   publisher = {Addison Wesley},
   year = {1998}}
+
+@article{Bast15a,
+  author = {Basten, Bas and van den Bos, Jeroen and Hills, Mark and Klint, Paul and Lankamp, Arnold and Lisser, Bert and van Der Ploeg, Atze and van der Storm, Tijs and Vinju, Jurgen},
+  title = {Modular language implementation in Rascal--experience report},
+  journal = {Science of Computer Programming},
+  volume = {114},
+  pages = {7--19},
+  publisher = {Elsevier},
+  year = {2015}}
 
 @inproceedings{Bast99a,
   author = {Remi Bastide and Sy Ousmane and Palanque Philippe},
@@ -11421,6 +11391,16 @@ autumn.},
   publisher = {ACM},
   year = {2008}}
 
+@article{Bond07c,
+  author = {Bond, Michael D and McKinley, Kathryn S},
+  title = {Probabilistic calling context},
+  journal = {Acm Sigplan Notices},
+  volume = {42},
+  pages = {97--112},
+  publisher = {ACM New York, NY, USA},
+  year = {2007},
+  number = {10}}
+
 @book{Bond76a,
   author = {J.A. Bondy and U.S.R. Murty},
   title = {Graph Theory with Applications},
@@ -14006,6 +13986,14 @@ analyzing features.},
   isbn = {978-3-540-87874-2},
   medium = {2},
   series = {LNCS}}
+
+@inproceedings{Brue11a,
+  author = {Bruening, Derek and Zhao, Qin},
+  title = {Practical memory checking with Dr. Memory},
+  booktitle = {International Symposium on Code Generation and Optimization (CGO 2011)},
+  pages = {213--223},
+  year = {2011},
+  organization = {IEEE}}
 
 @inproceedings{Brue92a,
   author = {Bernd Bruegge and Jim Blythe and Jeffrey Jackson and Jeff Shufelt},
@@ -22391,6 +22379,12 @@ checking and concurrency.},
   year = {2014},
   organization = {IEEE}}
 
+@inproceedings{Danie07a,
+  author = {Brett Daniel and Danny Dig and Kely Garcia and Darko Marinov},
+  title = {Automated testing of refactoring engines},
+  booktitle = {International Conference on Foundations of Software Engineering (FSE '07)},
+  year = {2007}}
+
 @inproceedings{Dant06a,
   author = {Daniel S. Dantas and David Walker},
   title = {Harmless advice},
@@ -24086,6 +24080,20 @@ identification, and we illustrate their effect on a
 100,000 LOC Cobol system. Furthermore, we use these
 results to contrast clustering with concept analysis
 techniques.}}
+
+@inproceedings{Deut20a,
+  author = {Deutsch, Alin and Xu, Yu and Wu, Mingxi and Lee, Victor E},
+  title = {Aggregation support for modern graph analytics in TigerGraph},
+  booktitle = {Proceedings of the 2020 ACM SIGMOD International Conference on Management of Data},
+  pages = {377--392},
+  year = {2020}}
+
+@inproceedings{Deut22a,
+  author = {Deutsch, Alin and Francis, Nadime and Green, Alastair and Hare, Keith and Li, Bei and Libkin, Leonid and Lindaaker, Tobias and Marsault, Victor and Martens, Wim and Michels, Jan and others},
+  title = {Graph pattern matching in GQL and SQL/PGQ},
+  booktitle = {Proceedings of the 2022 International Conference on Management of Data},
+  pages = {2246--2258},
+  year = {2022}}
 
 @article{Deut76a,
   author = {L. Peter Deutsch and Daniel G. Bobrow},
@@ -26452,6 +26460,16 @@ symbolic form on the scope.},
   pages = {166--177},
   year = {1992},
   month = oct}
+
+@article{Egi22a,
+  author = {Egi, Satoshi and Kawata, Akira and Kori, Mayuko and Ogawa, Hiromi},
+  title = {Embedding Non-linear Pattern Matching with Backtracking for Non-free Data Types into Haskell},
+  journal = {New Generation Computing},
+  volume = {40},
+  pages = {481--506},
+  publisher = {Springer},
+  year = {2022},
+  number = {2}}
 
 @inproceedings{Egye03a,
   author = {Alexander Egyed},
@@ -30017,6 +30035,13 @@ accommodates both large and small objects.},
   year = {2015},
   organization = {IEEE}}
 
+@inproceedings{Fran18a,
+  author = {Francis, Nadime and Green, Alastair and Guagliardo, Paolo and Libkin, Leonid and Lindaaker, Tobias and Marsault, Victor and Plantikow, Stefan and Rydberg, Mats and Selmer, Petra and Taylor, Andr{\'e}s},
+  title = {Cypher: An evolving query language for property graphs},
+  booktitle = {Proceedings of the 2018 international conference on management of data},
+  pages = {1433--1445},
+  year = {2018}}
+
 @book{Fran92a,
   author = {Nissim Francez},
   title = {Program Verification},
@@ -31425,6 +31450,13 @@ comprehension and software reuse.}}
   year = {1995},
   address = {London, UK},
   isbn = {3-540-60406-5}}
+
+@inproceedings{Gall95c,
+  author = {Gall, Harald C and Kl{\"o}sch, Ren{\'e} and Mittermeir, Roland T},
+  title = {Pattern-Driven Reverse Engineering.},
+  booktitle = {SEKE},
+  pages = {334--341},
+  year = {1995}}
 
 @inproceedings{Gall96a,
   author = {Erick Gall\'esio},
@@ -41543,6 +41575,14 @@ universal and (dependent) existential types.},
   booktitle = {Proceedings of the 24th IEEE International Conference on Program Comprehension ({ICPC} '16)},
   year = {2016}}
 
+@inproceedings{Imbu21a,
+  author = {Imbugwa, Gerald Birgen and de Ara{\'u}jo, Luiz Jonat{\~a} Pires and Khazeev, Mansur and Enombe, Ewane and Saliu, Harrif and Mazzara, Manuel},
+  title = {A case study comparing static analysis tools for evaluating SwiftUI projects},
+  booktitle = {Journal of Physics: Conference Series},
+  pages = {012022},
+  year = {2021},
+  organization = {IOP Publishing}}
+
 @misc{Imposter,
   title = {{Imposter}},
   key = {Imposter},
@@ -46803,6 +46843,13 @@ reengineering environment.},
   editor = {Serge Demeyer and Jan Bosch},
   series = {LNCS}}
 
+@inproceedings{Kohn20a,
+  author = {Kohn, Tobias and van Rossum, Guido and Bucher II, Gary Brandt and Talin and Levkivskyi, Ivan},
+  title = {Dynamic pattern matching with Python},
+  booktitle = {Proceedings of the 16th ACM SIGPLAN International Symposium on Dynamic Languages},
+  pages = {85--98},
+  year = {2020}}
+
 @inproceedings{Koll01a,
   author = {Ralf Kollman and Martin Gogolla},
   title = {Capturing Dynamic Program Behaviour with UML Collaboration Diagrams},
@@ -47715,6 +47762,14 @@ support approach.},
   year = {1988},
   month = aug,
   number = {3}}
+
+@inproceedings{Krau16a,
+  author = {Krause, Christian and Johannsen, Daniel and Deeb, Radwan and Sattler, Kai-Uwe and Knacker, David and Niadzelka, Anton},
+  title = {An SQL-based query language and engine for graph pattern matching},
+  booktitle = {Graph Transformation: 9th International Conference, ICGT 2016, in Memory of Hartmut Ehrig, Held as Part of STAF 2016, Vienna, Austria, July 5-6, 2016, Proceedings 9},
+  pages = {153--169},
+  year = {2016},
+  organization = {Springer}}
 
 @inproceedings{Krem03a,
   author = {Kremenek, Ted and Engler, Dawson},
@@ -51645,6 +51700,16 @@ and prove its correctness.},
   booktitle = {Proceedings of OOPSLA '98},
   pages = {36--44},
   year = {1998}}
+
+@article{Libk16a,
+  author = {Libkin, Leonid and Martens, Wim and Vrgo{\v{c}}, Domagoj},
+  title = {Querying graphs with data},
+  journal = {Journal of the ACM (JACM)},
+  volume = {63},
+  pages = {1--53},
+  publisher = {ACM New York, NY, USA},
+  year = {2016},
+  number = {2}}
 
 @inproceedings{Libl05a,
   author = {Ben Liblit and Mayur Naik and Alice X. Zheng and Alex Aiken and Michael I. Jordan},
@@ -60713,6 +60778,15 @@ such environments.},
   pages = {201--216},
   year = {2006}}
 
+@article{Moha18a,
+  author = {Mohamed, Khaled Abdelsalam and Kamel, Amr},
+  title = {Reverse engineering state and strategy design patterns using static code analysis},
+  journal = {International Journal of Advanced Computer Science and Applications},
+  volume = {9},
+  publisher = {Science and Information (SAI) Organization Limited},
+  year = {2018},
+  number = {1}}
+
 @incollection{Mohn02a,
   author = {Markus Mohnen},
   title = {Interfaces with default implementations in {Java}},
@@ -60766,6 +60840,40 @@ such environments.},
   pages = {279--295},
   publisher = {Springer},
   year = {2003}}
+
+@article{Mong14a,
+  author = {Melina Mongiovi and Rohit Gheyi and Gustavo Soares and Leopoldo Teixeira and Paulo Borba},
+  title = {Making refactoring safer through impact analysis},
+  journal = {Science of Computer Programming},
+  volume = {93},
+  pages = {39 -- 64},
+  year = {2014},
+  doi = {https://doi.org/10.1016/j.scico.2013.11.001},
+  issn = {0167 - 6423}}
+
+@inproceedings{Mong16a,
+  author = {Mongiovi, Melina},
+  title = {Scaling testing of refactoring engines},
+  booktitle = {International Conference on Software Engineering Companion},
+  pages = {674 -- 676},
+  publisher = {Association for Computing Machinery},
+  year = {2016},
+  url = {https://doi.org/10.1145/2889160.2891038},
+  doi = {10.1145/2889160.2891038},
+  isbn = {9781450342056},
+  address = {New York, NY, USA},
+  numpages = {3},
+  series = {ICSE '16}}
+
+@article{Mong18a,
+  author = {Mongiovi, Melina and Gheyi, Rohit and Soares, Gustavo and Ribeiro, Marcio and Borba, Paulo and Teixeira, Leopoldo},
+  title = {Detecting Overly Strong Preconditions in Refactoring Engines},
+  journal = {IEEE Transactions on Software Engineering},
+  volume = {44},
+  pages = {429 -- 452},
+  year = {2018},
+  doi = {10.1109/TSE.2017.2693982},
+  number = {5}}
 
 @book{Mong93a,
   author = {Josep Mongui\'o},
@@ -61155,6 +61263,14 @@ problems arised while this project.},
   year = {1999},
   month = apr,
   series = {{LNCS}}}
+
+@inproceedings{More03a,
+  author = {Pierre-Etienne, Moreau and Ringeissen, Christophe and Vittek, Marian},
+  title = {A pattern matching compiler for multiple target languages},
+  booktitle = {International Conference on Compiler Construction},
+  pages = {61--76},
+  year = {2003},
+  organization = {Springer}}
 
 @inproceedings{More05a,
   author = {A. Moreira and A. Rashid and J. Ara\'{u}jo},
@@ -67109,6 +67225,16 @@ experiments.},
   pages = {286--315},
   year = {2009},
   number = {3}}
+
+@misc{Pan24a,
+  author = {Pan, Zhenyu and Cao, Rongyu and Cao, Yongchang and Ma, Yingwei and Li, Binhua and Huang, Fei and Liu, Han and Li, Yongbin},
+  title = {Codev-Bench: How Do {LLMs} Understand Developer-Centric Code Completion?},
+  publisher = {{arXiv}},
+  url = {http://arxiv.org/abs/2410.01353},
+  shorttitle = {Codev-Bench},
+  number = {{arXiv}:2410.01353},
+  urldate = {2024-10-03}
+}
 
 @inproceedings{Pana03a,
   author = {Thomas Panas and Welf L{\"o}we and Uwe A{\ss}mann},
@@ -74156,6 +74282,14 @@ this approach to other recommender systems.}}
   year = {2011},
   organization = {Springer}}
 
+@incollection{Rodr12a,
+  author = {Rodriguez, Marko A and Neubauer, Peter},
+  title = {The graph traversal pattern},
+  booktitle = {Graph data management: Techniques and applications},
+  pages = {29--46},
+  publisher = {IGI global},
+  year = {2012}}
+
 @article{Rodr13a,
   author = {Antonio Wendell De Oliveira Rodrigues and Fr{\'{e}}d{\'{e}}ric Guyomarc'h and Jean{-}Luc Dekeyser},
   title = {An {MDE} Approach for Automatic Code Generation from {UML/MARTE} to OpenCL},
@@ -74166,6 +74300,13 @@ this approach to other recommender systems.}}
   url = {https://doi.org/10.1109/MCSE.2012.35},
   doi = {10.1109/MCSE.2012.35},
   number = {1}}
+
+@inproceedings{Rodr15a,
+  author = {Rodriguez, Marko A},
+  title = {The gremlin graph traversal machine and language (invited talk)},
+  booktitle = {Proceedings of the 15th Symposium on Database Programming Languages},
+  pages = {1--10},
+  year = {2015}}
 
 @inproceedings{Rodr16a,
   author = {Rodriguez-Cancio, Marcelino and Combemale, Benoit and Baudry, Benoit},
@@ -74178,6 +74319,13 @@ this approach to other recommender systems.}}
   keywords = {Performace evaluation ; microbencharking ; text tagging},
   month = {sep},
   series = {ASE 2016:Proceedings of the 31st IEEE/ACM International Conference on Automated Software Engineering}}
+
+@inproceedings{Rodr24a,
+  author = {Rodrigues, Emanuel and Macedo, Jos{\'e} Nuno and Viera, Marcos and Saraiva, Jo{\~a}o},
+  title = {pyZtrategic: A Zipper-Based Embedding of Strategies and Attribute Grammars in Python.},
+  booktitle = {ENASE},
+  pages = {615--624},
+  year = {2024}}
 
 @inproceedings{Roehm12a,
   author = {Roehm, Tobias and Tiarks, Rebecca and Koschke, Rainer and Maalej, Walid},
@@ -75594,6 +75742,14 @@ support reuse.},
   year = {2004},
   month = sep,
   organization = {IEEE}}
+
+@inproceedings{Ryu10a,
+  author = {Ryu, Sukyoung and Park, Changhee and Steele Jr, Guy L},
+  title = {Adding pattern matching to existing object-oriented languages},
+  booktitle = {ACM SIGPLAN Foundations of Object-Oriented Languages Workshop},
+  volume = {5},
+  year = {2010},
+  organization = {Citeseer}}
 
 @misc{SAX,
   title = {{Simple {API} for XML}},
@@ -79871,6 +80027,14 @@ concept lattice, and prove the algorithm correct.},
   isbn = {1-59593-348-4},
   location = {Portland, Oregon, USA}}
 
+@inproceedings{Simo22a,
+  author = {{\c{S}}imonca, Iuliana and Corbea, Alexandra and Belciu, Anda},
+  title = {Analytical Capabilities of Graphs in Oracle Multimodel Database},
+  booktitle = {Education, Research and Business Technologies: Proceedings of 20th International Conference on Informatics in Economy (IE 2021)},
+  pages = {97--109},
+  year = {2022},
+  organization = {Springer}}
+
 @phdthesis{Simo76a,
   author = {Charles Simonyi},
   title = {Meta-Programming: A Software Production Method},
@@ -80117,6 +80281,14 @@ concept lattice, and prove the algorithm correct.},
   publisher = {ACM Press},
   year = {2005},
   address = {Saint Lous, Missouri, USA}}
+
+@incollection{Sloa09a,
+  author = {Sloane, Anthony M},
+  title = {Lightweight language processing in Kiama},
+  booktitle = {International Summer School on Generative and Transformational Techniques in Software Engineering},
+  pages = {408--425},
+  publisher = {Springer},
+  year = {2009}}
 
 @book{Sloc05a,
   author = {Terry A. Slocum and Robert B. McMaster and Fritz C. Kessler and Hugh H. Howard},
@@ -80832,6 +81004,14 @@ systems within different domains.},
   pages = {52--57},
   year = {2010},
   number = {4}}
+
+@inproceedings{Soar11a,
+  author = {Soares, Gustavo and Mongiovi, Melina and Gheyi, Rohit},
+  title = {Identifying overly strong conditions in refactoring implementations},
+  booktitle = {IEEE International Conference on Software Maintenance (ICSM)},
+  pages = {173-182},
+  year = {2011},
+  doi = {10.1109/ICSM.2011.6080784}}
 
 @inproceedings{Sobe96a,
   author = {J.M. Sobel and Daniel P. Friedman},
@@ -84290,6 +84470,20 @@ show their usefulness with a Smalltalk case study.},
   year = {2013},
   url = {https://hal.archives-ouvertes.fr/hal-00838713},
   month = apr}
+
+@inproceedings{Thak17a,
+  author = {Thakkar, Harsh and Punjani, Dharmen and Auer, S{\"o}ren and Vidal, Maria-Esther},
+  title = {Towards an integrated graph algebra for graph pattern matching with gremlin},
+  booktitle = {Database and Expert Systems Applications: 28th International Conference, DEXA 2017, Lyon, France, August 28-31, 2017, Proceedings, Part I 28},
+  pages = {81--91},
+  year = {2017},
+  organization = {Springer}}
+
+@article{Thak18a,
+  author = {Thakkar, Harsh and Punjani, Dharmen and Keswani, Yashwant and Lehmann, Jens and Auer, S{\"o}ren},
+  title = {A Stitch in Time Saves Nine--SPARQL querying of Property Graphs using Gremlin Traversals},
+  journal = {arXiv preprint arXiv:1801.02911},
+  year = {2018}}
 
 @inproceedings{Thal06a,
   author = {Florian Thalmann and Markus Gaelli},
@@ -88618,6 +88812,20 @@ applied.},
   year = {2004},
   url = {http://www.w3.org/TR/ws-arch}}
 
+@misc{WS13a,
+  author = {World Wide Web Consortium and others},
+  title = {SPARQL 1.1 overview},
+  publisher = {World Wide Web Consortium},
+  year = {2013},
+  url = {https://www.w3.org/TR/sparql11-overview/}}
+
+@misc{WS14a,
+  author = {World Wide Web Consortium and others},
+  title = {RDF 1.1 concepts and abstract syntax},
+  publisher = {World Wide Web Consortium},
+  year = {2014},
+  url = {https://www.w3.org/TR/rdf11-concepts/}}
+
 @misc{WSDL,
   author = {{W3C} Note},
   title = {Web Services Description Language ({WSDL}) 1.1},
@@ -89156,6 +89364,12 @@ demonstrate its applicability with a realistic example.},
   year = {2020},
   doi = {10.1109/ICSME46990.2020.00053},
   keywords = {Software maintenance;Instruments;Fault detection;Conferences;Data collection;Test pattern generators;Testing;software testing;field data;test-input generation}}
+
+@misc{Wang24a,
+  author = {Wang, Haibo and Xu, Zhuolin and Zhang, Huaien and Tsantalis, Nikolaos and Tan, Shin Hwei},
+  title = {An Empirical Study of Refactoring Engine Bugs},
+  year = {2024},
+  url = {https://arxiv.org/abs/2409.14610}}
 
 @inproceedings{Wang92a,
   author = {Michael F. Wangler and Peeter Hansen},
