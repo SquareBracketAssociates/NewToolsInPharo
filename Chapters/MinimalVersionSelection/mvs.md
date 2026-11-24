@@ -1,11 +1,9 @@
 ## Same load, same versions: minimal version selection for Metacello
 @chamvs
 
-This chapter is an edited transcript of a presentation given by Guille Polito on November 17, 2026, and of the discussion that took place during the talk. The spoken text has been reorganized and turned into prose, the code and the reports come from the slides and from the live demos, and the version trees have been redrawn.
 
 The chapter presents _minimal version selection_ (MVS), an algorithm that chooses which version of each project to load, and how it was integrated into Metacello, the project loader of Pharo. It starts with the problems of the current Metacello, describes the algorithm step by step on one example, and then shows the pieces needed to make it work in Pharo: a resolution step, reading baselines without loading them, taking the image into account, cleaning up, reporting problems, and working on branches.
 
-!!note At the time of the talk the implementation was recent. It was written mostly by Claude, by alternating design discussions, implementation and code review. In the week before the talk the practice became stricter: every line is reviewed, and what is not accepted is either fixed or logged in a backlog.
 
 ### The problem: which version do we load?
 @secproblem

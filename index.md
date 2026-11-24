@@ -43,3 +43,4 @@ S. Ducasse and G. Rakic
 <!inputFile|path=Chapters/MoTion/Motion.md!>
 <!inputFile|path=Chapters/Illimani/Illimani.md!>
 <!inputFile|path=Chapters/ReEngine/ReEngine.md!>
+<!inputFile|path=Chapters/MinimalVersionSelection/mvs.md!>
