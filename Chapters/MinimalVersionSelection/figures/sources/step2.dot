@@ -1,0 +1,13 @@
+digraph G { rankdir=LR; bgcolor=white; nodesep=0.28; ranksep=0.55; pad=0.12; fontname="Helvetica"; fontsize=12;
+node [shape=box style="rounded,filled" fillcolor=white fontname="Helvetica" fontsize=13 height=0.36 margin="0.14,0.05" color="#555555"];
+edge [color="#555555" arrowsize=0.7 fontname="Helvetica" fontsize=11];
+A [label="A 1.0" fillcolor="#CFCBFF"];
+B [label="B 1.0" fillcolor="#CDEBCF"];
+C2 [label="C 1.2" fillcolor="#FFD9A8" color="#C05A00" penwidth=2];
+D [label="D 2.1" fillcolor="#FFD9A8" color="#C05A00" penwidth=2];
+A->B;
+B->C2;
+B->D;
+sel [shape=plain style="" label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="2" CELLPADDING="4" COLOR="#777777"><TR><TD BORDER="0"><B>Selected</B></TD></TR><TR><TD BGCOLOR="#CDEBCF">A 1.0</TD></TR><TR><TD BGCOLOR="#CDEBCF">B 1.0</TD></TR><TR><TD BGCOLOR="#FFD9A8">C 1.2</TD></TR><TR><TD BGCOLOR="#FFD9A8">D 2.1</TD></TR></TABLE>>];
+D->sel [style=invis weight=0 minlen=2];
+}

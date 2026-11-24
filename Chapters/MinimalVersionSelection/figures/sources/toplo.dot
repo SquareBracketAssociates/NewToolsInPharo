@@ -1,0 +1,11 @@
+digraph G { rankdir=LR; bgcolor=white; nodesep=0.28; ranksep=0.55; pad=0.12; fontname="Helvetica"; fontsize=12;
+node [shape=box style="rounded,filled" fillcolor=white fontname="Helvetica" fontsize=13 height=0.36 margin="0.14,0.05" color="#555555"];
+edge [color="#555555" arrowsize=0.7 fontname="Helvetica" fontsize=11];
+T [label="Toplo v0.11.0" fillcolor="#CFCBFF"];
+Al [label="Album v0.11.0" fillcolor="#CDEBCF"];
+B [label="Bloc v3.0.0" fillcolor="#CDEBCF"];
+Ax [label="Alexandrie v2.10.0" fillcolor="#CDEBCF"];
+X [label="XML-XMLParser v3.6.3" fillcolor="#CDEBCF"];
+Bm [label="BitmapCharacterSet 1.2.7" fillcolor="#CDEBCF"];
+O [label="OrderPreservingDictionary v1.6.0" fillcolor="#CDEBCF"];
+T->Al; T->B; Al->B; B->Ax; B->X; X->Bm; X->O;}

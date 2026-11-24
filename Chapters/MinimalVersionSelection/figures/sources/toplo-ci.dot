@@ -1,0 +1,28 @@
+digraph G { rankdir=LR; bgcolor=white; nodesep=0.28; ranksep=0.55; pad=0.12; fontname="Helvetica"; fontsize=12;
+node [shape=box style="rounded,filled" fillcolor=white fontname="Helvetica" fontsize=13 height=0.36 margin="0.14,0.05" color="#555555"];
+edge [color="#555555" arrowsize=0.7 fontname="Helvetica" fontsize=11];
+subgraph cluster_i { label="integration build"; labeljust=l; color="#BBBBBB"; style=rounded; margin=12;
+iT [label="Toplo\nCI checkout" fillcolor="#FFD9A8" color="#C05A00" penwidth=2];
+iAl [label="Album dev" fillcolor="#FFD9A8" color="#C05A00" penwidth=2];
+iB [label="Bloc dev" fillcolor="#FFD9A8" color="#C05A00" penwidth=2];
+iAx [label="Alexandrie dev" fillcolor="#FFD9A8" color="#C05A00" penwidth=2];
+iX [label="XMLParser v3.6.3\n(dev mode, fixed tag)" fillcolor="#FFD9A8" color="#C05A00" penwidth=2];
+iT->iAl;
+iT->iB;
+iAl->iB;
+iB->iAx;
+iB->iX;
+}
+subgraph cluster_d { label="dev build"; labeljust=l; color="#BBBBBB"; style=rounded; margin=12;
+dT [label="Toplo\nCI checkout" fillcolor="#FFD9A8" color="#C05A00" penwidth=2];
+dAl [label="Album v0.11.0" fillcolor="#CDEBCF"];
+dB [label="Bloc v3.0.0" fillcolor="#CDEBCF"];
+dAx [label="Alexandrie\n(version asked)" fillcolor="#CDEBCF"];
+dX [label="XMLParser\n(version asked)" fillcolor="#CDEBCF"];
+dT->dAl;
+dT->dB;
+dAl->dB;
+dB->dAx;
+dB->dX;
+}
+}

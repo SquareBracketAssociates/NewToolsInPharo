@@ -1,0 +1,14 @@
+digraph G { rankdir=LR; bgcolor=white; nodesep=0.28; ranksep=0.55; pad=0.12; fontname="Helvetica"; fontsize=12;
+node [shape=box style="rounded,filled" fillcolor=white fontname="Helvetica" fontsize=13 height=0.36 margin="0.14,0.05" color="#555555"];
+edge [color="#555555" arrowsize=0.7 fontname="Helvetica" fontsize=11];
+pi [label="image: F 4.1" fillcolor="#EAF4FF"];
+pb [label="baselines: F 4.2" ];
+pm [label="max" shape=circle];
+pr [label="F 4.2\nupgraded" fillcolor="#CDEBCF"];
+pi->pm; pb->pm; pm->pr;
+qi [label="image: F 4.3" fillcolor="#EAF4FF"];
+qb [label="baselines: F 4.2" ];
+qm [label="max" shape=circle];
+qr [label="F 4.3\nkept, never goes down" fillcolor="#CDEBCF"];
+qi->qm; qb->qm; qm->qr;
+}

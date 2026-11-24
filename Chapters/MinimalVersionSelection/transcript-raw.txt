@@ -1,0 +1,712 @@
+[0:00] So I wanted to show you what I was doing with Metacello, Metacello, like people say.
+[0:05] I say Metacello, I say it in the Italian way.
+[0:10] In the last weeks, and what, so this morning I did a pull request to Toklo to put into usage in Toklo to show you how it works.
+[0:22] So it's working, and the question is now what's next.
+[0:26] So Cyril was telling me that he has concerns.
+[0:29] So the question is to discuss those concerns.
+[0:32] So this was completely done with Claude first.
+[0:36] So that means that I start with Claude, I discuss, then we implement,
+[0:40] or it implements, I discuss, I do code reviews.
+[0:44] And since last week, I am reviewing every line of code that is written by Claude.
+[0:48] So it's not just Claude does and it just gets integrated.
+[0:51] No, I am reading every line.
+[0:53] And every line I don't like, it gets a review and Claude fixes it.
+[0:58] fixes it and then or it's logged in a backlog to see okay maybe we need to do
+[1:03] it later so and what is the topic today so let's imagine that you have block on
+[1:09] the left or top on the left that depends on block and block depends on two things
+[1:13] and and I here for example you have two dependencies on C which is I don't know
+[1:18] Alexandrine you have a dependency on Alexandrine 1.2 and 1.3 and then the
+[1:23] question is which version of C are you going to take? Right now what happens is
+[1:29] that Metachero will walk all these baselines and eventually when it finds a
+[1:32] conflict it will open a pop-up, actually throws an exception and in the default
+[1:38] action of the exception we have a pop-up or you can overwrite that in the
+[1:44] script, in the load script, something like this so you can say ah there's a
+[1:49] conflict using coming or use loaded and so on.
+[1:54] But the only thing is that with these exceptions,
+[1:56] you have to, by default, they manage all the conflicts.
+[2:00] So all the conflicts are decided in the same way.
+[2:03] So either you use incoming for everything.
+[2:05] So if you write it like this, you
+[2:06] are using incoming for all conflicts
+[2:07] and use loaded for all aggregates.
+[2:10] You can do other things, but it's harder.
+[2:12] Of course.
+[2:13] You need to check the exceptions and check, ah,
+[2:15] if the exception is this and then.
+[2:16] Yes.
+[2:17] So yes, I know.
+[2:18] By default, everybody uses this and nobody does the other.
+[2:23] So, and sometimes it happens,
+[2:27] it starts loading baselines in the middle of the thing,
+[2:30] sometimes it can let something half loaded
+[2:33] and checked out and dirty.
+[2:36] So, sometimes it's too late
+[2:39] and it doesn't tell you exactly why,
+[2:41] so, you know, it's far from perfect.
+[2:44] Also I put into the soup Martins requirement of the other day which was I want to develop
+[2:55] top-long block at the same time each one on their own branch so I want to have them both
+[3:00] in bleeding edge. Yes so I'm going to show you at the end of the presentation how this is how I
+[3:06] propose to do it. But the first thing I want to do because that is one thing that happens all the
+[3:12] time so we cannot be branch first we need to be reproducible first because
+[3:18] one thing Martin is developing but we have hundreds of people that will want
+[3:23] to use blog for two people that is going to develop blog so I need to make it
+[3:28] easy for the people to use it more than the people so I want to help my team to
+[3:33] develop it but I want to have to help the hundred users that are using it more
+[3:41] so we need to have reproducible versions. So I'm going to show you a way that where
+[3:48] we can have reproducible builds but it comes at the cost. So upgrading
+[3:58] versions is a bit more difficult. So right now actually we are getting, if you use a
+[4:04] branch that means that you're getting the latest version of everything all the
+[4:07] time which means that you are never reproducible and it's always bleeding
+[4:10] it's always dangerous with what I'm going to propose it's the other way around by default
+[4:15] it doesn't upgrade it always gives me the same thing and if you want to upgrade you need to do
+[4:21] it manually it takes a bit the image into account but not too much I will show you later why though
+[4:31] I left some design decisions open and I was conservative with many of the things.
+[4:38] So I kind of dislike the idea of depending on a branch because it's not reproducible at all.
+[4:47] So I'm proposing a way to do it with branches but it's a bit different. And what happens if you
+[4:55] have conflicts so for example you have two projects that depend to the that
+[5:02] ask for two different things so can what can i build something that depends on two different
+[5:07] major versions of c or not because if there are two major versions that are different that means
+[5:13] that maybe so if i choose ryan farrow can load one version of c either 1.2 or 2.0 it cannot load
+[5:20] both of them so that means that if i if i load 2.0 probably b doesn't work and if i load 1.2
+[5:27] d will not work so there's no winnings for the tree exactly so i and we need to manage this
+[5:34] it's not just transparently using one of the other one and there is a lot of old code that
+[5:40] does a lot of crazy stuff so sometimes there are baselines that don't combine anymore
+[5:44] and it happens in many of the cases that I tested.
+[5:48] So I started looking at something that is called
+[5:52] minimal version selection that comes in Go.
+[5:56] I think it was invented in Go a couple of years ago.
+[6:01] And I tried to see how can we put this in Faro and in
+[6:06] Meta-Chelo.
+[6:07] So it's from, well, almost 10 years ago.
+[6:11] The idea is to have, it's a way to select what version
+[6:16] to get installed in a system without the log file.
+[6:19] So you have reproducible builds without having to have a file
+[6:22] that says exactly what was built to reproduce it.
+[6:25] It is predictable and it is simple and fast to implement.
+[6:28] There is no sub solver, there is,
+[6:30] so it just is a little algorithm with a work list
+[6:33] and that's all.
+[6:36] So I started with this idea, okay,
+[6:39] let's implement minimal version selection for MetaCello and let's see how it goes.
+[6:46] So how does it work? I will show an example but it is that if Pablo asks for like...
+[6:52] maybe I can go here, yes...
+[6:56] ta ta ta ta ta ta ta...
+[6:58] let me go to the example here.
+[7:00] So here we are asking for two versions of C.
+[7:04] If they are both compatible, so here they are both compatible because they declare the same major version, we're going to take the highest of them.
+[7:13] So that means that here, between C1.2 and C1.3, we're going to take the highest.
+[7:19] So here is C1.3.
+[7:23] Maybe there is a new release of C that is C1.5.
+[7:27] It's not in the dependency tree, so we're not going to load that one.
+[7:30] We're just loading the ones that we are in the tree.
+[7:31] So how does it work? So first we see, so we are going to follow the dependencies in the
+[7:40] baselines as we did before but so here for example we take a that is 1.0 and a depends on b 1.0 and
+[7:48] then once we see b 1.0 we find its dependencies c 1.2 and d 1.2 and then we're going to traverse
+[7:56] these other dependencies so c1.2 doesn't depend on anything and d1 actually yes here in this
+[8:02] example it depends on e3.5 we added to the list and then d1 2.1 depends on c1.3
+[8:10] so if you see what happens is that here since 1.3 is higher but compatible with 1.2 we're going to
+[8:16] just overwrite this 1.2 and that's all and then we look at the dependencies of c1.3 and it says ah
+[8:23] it depends on f for the two and so on so this is just we iterate once every
+[8:28] dependency and we build this list every time that we find a new dependency if it
+[8:32] is compatible we overwrite and so on so at the end we build a list of each project with the
+[8:39] version that should be loaded um but here in this example you see that for example there are
+[8:45] versions that exist in the wild like there could be new versions of c d or e but since
+[8:52] nobody asks for them they are not taking into account so in doing new releases of packages
+[9:01] they don't change the resolution and that means that the developer can work on a new version
+[9:06] without disturbing existing yes it doesn't they will never break other people's stuff
+[9:11] only when somebody load them explicitly now one thing that i if you see this example now
+[9:20] Now, since we dropped the version 1.2 from C, the version of E shouldn't be required anymore.
+[9:29] Because it's only C1.2 that depends on E3.5, but it's still on the list.
+[9:35] So in Go, they don't solve this issue because they don't need it, because they are going
+[9:41] to compile only the things that are required later from the list.
+[9:46] So to solve that issue, we do a clean up.
+[9:49] Also, we have to, it's removing a dependency or adding a new dependency.
+[9:57] Removing a dependency does not make compatibility.
+[9:59] It should not be a different version.
+[10:02] That depends.
+[10:03] I mean, right now.
+[10:05] If you're dependent on F, if you load C to talk to F, you depend on F, actually.
+[10:10] Exactly.
+[10:11] So right now people do that.
+[10:12] They say, oh yeah, I don't need to load that because.
+[10:14] Yeah, and it depends because sometimes you have projects, you expect this project to
+[10:20] have some dependency and sometimes you don't even expect it.
+[10:24] For example, in Telescope, I dropped a dependency that was collection extensions because I
+[10:33] was not needing these extensions anymore and I did not want to do a major version because
+[10:37] I removed some collection extensions.
+[10:39] Is it really a major version?
+[10:43] To me it depends on what do you mean by compatibility in your package.
+[10:47] But this is using semantic version.
+[10:50] If you, as the owner or the maintainer of C, say that C remains compatible, because this
+[10:58] is the feature that you documented, when you change from E to F, then that's okay.
+[11:04] The only problem is if B says, oh, I know that E will be loaded, I don't need to declare
+[11:09] it as a dependency.
+[11:10] Yes.
+[11:11] That's a bug.
+[11:12] That's a bug.
+[11:13] I mean, that's what we're...
+[11:15] We need a clear guideline of what...
+[11:18] A checker.
+[11:20] He has a checker.
+[11:21] Yeah, I can show you later what I have.
+[11:23] But one of the things I want to do also is
+[11:26] to shuffle how...
+[11:28] There are some things that, for example,
+[11:29] Monticello will try to load some stuff in some order
+[11:33] because it was just specified like that.
+[11:35] So it will load the packages in the order
+[11:37] in which they were specified
+[11:38] without actually telling the dependencies.
+[11:40] for example you say i i depend on s unit and then i have my test but you never said that your test
+[11:46] depends on s unit yes we have they are loaded in the right order just by chance yes when you don't
+[11:51] have that is mostly when you don't have dependencies at all you don't use the dependencies and then
+[11:57] the free ones yes um but okay so the point is that i wanted to build this and this is what i wanted
+[12:05] to build and i will show you how this so this fixes the part it doesn't fix everything you added
+[12:09] the feature to remove it or not?
+[12:12] Yes, but I tell you that, yeah.
+[12:14] But the point with this is that now,
+[12:17] Martin does a new release of block,
+[12:20] or a new release of Topolo, and doesn't break anything,
+[12:23] because actually the block, or the Topolo dependency graph
+[12:28] is a graph.
+[12:29] So there are some block is dependent by Topolo
+[12:31] and by album, for example.
+[12:33] And then right now, if they don't,
+[12:36] they are not the same version, you have pop-ups.
+[12:39] And with this actually it automatically selects the right one and you don't need to be upgrading all the time.
+[12:45] Yes, and always select the same.
+[12:48] Yes, it always selects the same, given the same commit and the same version.
+[12:51] Now, how was MetaCello working until now?
+[12:57] It was organized in three main steps.
+[13:01] First there was record, then fetch, then load.
+[13:03] Record was reading the baselines and making a list of things to load.
+[13:09] From that list of things to load, first there was a fetch step that was cloning or loading
+[13:16] the packages into disk, and then the loading is loading into the image.
+[13:22] The dependency resolution was happening during the record.
+[13:25] So it was doing, resolving the graph of dependencies and building the list of things to load, list
+[13:32] of packages.
+[13:35] So what we added is a new step before that is just resolution of dependencies.
+[13:42] And what we did is we cut the existing record into two.
+[13:46] So the record now just builds a list of things to load and then the resolution, we named
+[13:51] the old one interactive because it asks the user every time that it finds something.
+[13:56] And then the new one is the MBS resolution and it's completely backwards compatible.
+[14:03] And then the result says, oh, for this project,
+[14:06] you need version 1.0, for this project, 2.3,
+[14:08] and then the record will tell the list of packages
+[14:10] that need to be loaded in which order,
+[14:12] and the fetch and load do the same stuff as before,
+[14:15] not touching.
+[14:19] Okay, this is our small issues that we fixed on the way.
+[14:27] So this I don't care too much.
+[14:29] So we are actually, now in the new version of MVF resolver,
+[14:32] we are loading the base name as anonymous subclasses.
+[14:36] So they are not making the image dirty.
+[14:39] So that is the only thing that you need to understand
+[14:41] from these slides, I don't care.
+[14:44] Like that we can do the analysis
+[14:46] because actually every time that you see,
+[14:47] for example, this graph,
+[14:49] that means that you need to load the base,
+[14:50] the base names of all of them.
+[14:52] So for C, you have two versions of C.
+[14:54] You need to load the base names of C1.2 and C1.2.
+[14:57] I like the idea to load classes
+[15:00] without installing them in the main namespace.
+[15:02] something we should use much more often. Really nice. Yes, so Claude called that the sandbox,
+[15:10] so it basically inside the sandbox. I didn't care too much about the name, so he was happy with that
+[15:16] and he was okay with that. So that is what you will see as the sandbox sometimes. Now, what happens
+[15:25] if you already have a version of something loaded in the image? Here for example you want to load
+[15:30] A1.0 and F4.2 is already installed apparently 4.15 is shipping in Alexandria is that right?
+[15:38] Claude told me that but maybe it's wrong. It's wrong okay you're wrong. No not now. Okay thank you.
+[15:44] It doesn't matter so the point is that you already have something loaded in Faro
+[15:49] and MetaCello knows it so right now actually every time that that happens
+[15:54] metacello goes on the on downgrade or on upgrade blocks yes upgrade means you're trying to load a
+[16:02] version that is newer than what is in the image and on the grade you are trying to load something
+[16:06] that is older than what is in the image yes that means that metacello by default so if you use the
+[16:14] incoming in those metacello will allow you to replace installed code which may be dangerous
+[16:21] Now, with MBS, with minimal version selection, what happens is that the versions of the things
+[16:30] that are installed in the image add requirements into the graph. So for example, if in the image
+[16:35] you have 4.1 and the baseline asks 4.2, then you get the bigger of those. So that means that you
+[16:42] can upgrade from 4.1 to 4.2 because it's compatible. Now, if in the image you have 4.3
+[16:48] and the baseline asks for the two then you keep for the three because that is
+[16:53] the biggest of them and then nothing ever nothing changes so we can go up as
+[17:00] soon as it is compatible and we never go down
+[17:07] it may happen that you have something installed in the image either that was
+[17:12] loaded from a branch or iceberg directly or whatever right now we're not
+[17:16] handling that every time you have that we have an error so mbs says I don't know what to do there
+[17:21] I didn't want to decide yet because it's a complicated thing what happens if I we decide
+[17:26] to upgrade block what happens with all the tools that use block do they get broken or not so I
+[17:33] didn't want to get into that now right now it says I don't want to load that and if you use mbs
+[17:40] no so here is what Pablo says so here C depends on E but we dropped C dot 1 dot 2 nobody uses E
+[17:50] so we should do a kind of a second pass on the dependency list and say okay nobody uses E so we
+[17:56] can drop it and at the end we have a clean list of things to load and combine in the image so the
+[18:07] The other thing that we added is that we added a way to understand what is happening in a load.
+[18:16] So here for example, every time that you try to load something with MetaCello, at least with MBS,
+[18:22] I need to make it also work at least in a restricted way for the old version,
+[18:27] you get all the errors, so you get errors, warnings, and some information about your base lines.
+[18:34] like for example if you have some baseline that cannot load because it
+[18:38] doesn't compile anymore or you have things that are not declared or if you
+[18:42] are trying to depend on a branch or things that MVS is not made for those
+[18:47] are errors so that means that you cannot be loaded some things we can load and I
+[18:53] try to keep as much backwards compatibility as I could and those are
+[18:57] warnings like for example if you try to use the one dot x dot x that's the
+[19:03] he uses that we interpret that in a certain way but we give it as a warning
+[19:08] or for example if you have a baseline that starts to do a small talk version
+[19:13] blah blah blah and then depending on the version of small talk it says if it is
+[19:17] bigger than four I do this other way then and that is a warning for now and
+[19:23] information is ah you loaded block 1.3 but 1.5 is available so maybe you would
+[19:29] like to upgrade that. So here for example you see this is moves 13.
+[19:39] Okay so what are the kind of errors that we have? So for example if you try to
+[19:45] load the branch, if you have a conflict between two major versions like for
+[19:51] example here somebody asked for C1.2 and somebody else asked for C2.0.
+[19:57] so that will break you cannot take a decision there or for example if
+[20:04] somebody tries to load a package from one place and another person is trying to
+[20:08] load the same package work from somewhere else for fork but there's no
+[20:13] guarantees that when you have for that they actually agree on what they load so
+[20:17] that right now is a scenario the UI so if you try to use a group that is not
+[20:26] declared before you had an exception now you have knowledge in the in the
+[20:30] report and sometimes you have a baseline that don't work. So the errors we cannot do anything about it?
+[20:37] What do you mean? Like there is no way to tell oh if this error happens you do this?
+[20:43] No there's no way to do that because it doesn't load. So I will show you how to
+[20:51] do the branch stuff so there is a feature where you can overwrite packages in some way where you
+[21:01] can do whatever you want but it's completely unsafe because you can overwrite you're overwriting so
+[21:06] there's there's no reproducibility and that you can use for covering the first three cases for
+[21:13] example yeah we have a hack i know in the bootstrap because we first installed uh tunnel using uh
+[21:22] file tree like we do the clone and we use file tree because we don't have yet the support for
+[21:27] remote repositories then we have to flush the registry to be able to launch the loading of the
+[21:32] pharaoh baseline because then it reforms the github tunnel and there was a conflict between both
+[21:39] your eyes yes so what are the warnings so for example floating versions that's
+[21:46] that move that means that for example I don't know who else does but I know that
+[21:51] there are many packages out there but one dot x dot x that is a tag that today
+[21:56] points to something but tomorrow it may point to something different so that
+[22:00] moves that means that it doesn't it's not reproducible so what we are doing is
+[22:06] we are interpreting it as 1.0.0.
+[22:08] That means, okay, that means that you are compatible
+[22:11] with all the ones, okay?
+[22:13] And then if you, it is treated like that for the algorithm.
+[22:18] That's all.
+[22:19] There are a lot of places where we are breaking
+[22:23] the semantic version.
+[22:25] You may find versions that are 1.02.
+[22:29] What does it mean?
+[22:31] Does it mean 1.2.0 or 1.0.2?
+[22:34] I don't know.
+[22:35] There is even worse, there is a Roissal that, for example, V1.2G, V1.2H.
+[22:42] So, yes.
+[22:44] So, those, for example, sometimes, so if they can be parsed somehow as a semantic version, we try to parse them and we mark them as warnings.
+[22:55] But the point of the warnings is, okay, then you can read them, fix them, or eventually we can make, okay, we can say, okay, these warnings are now going to be deprecated.
+[23:05] and not supporting the next version and blah blah blah.
+[23:09] And they can break next year.
+[23:11] We pass them as errors later.
+[23:16] So if you have projects that are,
+[23:18] so the project I'm copied from is a warning right now.
+[23:22] I never, so it's a strange way to use it.
+[23:25] I don't understand it too much.
+[23:27] Why, what is the need?
+[23:30] I thought it was probably me.
+[23:31] And then many, many times we are telling the slash source,
+[23:38] so the path where the project needs to be loaded from,
+[23:43] which is only useful and needed
+[23:45] for tonal and file repositories.
+[23:47] Because when you're having dependency
+[23:49] of something that is on a nice repository,
+[23:52] the repository knows where the sources are.
+[23:55] So you don't need to tell it from the outside.
+[23:57] Because like that, if the project wants to move its sources
+[23:59] from one directory to another one, you don't.
+[24:01] That would, yeah, that's quite important.
+[24:03] So, we have huge problems when people moved from
+[24:08] repository source.
+[24:09] And things.
+[24:10] Yeah, too, things like that.
+[24:12] So, the point is, this is a warning,
+[24:15] but this is ignore the path that you specified ignore
+[24:18] because we take the one that is in the repository,
+[24:22] which is the true one.
+[24:26] So, for all of the findings,
+[24:28] so I will show you then there's also a textual report
+[24:31] and we show which baseline did what,
+[24:36] with what, with version and so on.
+[24:39] So like that you can track and understand
+[24:40] where the problem is.
+[24:43] So you can, this is an inspector view,
+[24:45] you can click on it and you can check the,
+[24:48] look, for somebody, there is a dependency
+[24:52] to for talent source without version.
+[24:57] So there's no branch, no tag, no anything.
+[25:00] Fame depends on development and so this is in an inspector tab and also for the CI I
+[25:09] implemented a textual report that says exactly the same in two versions so you
+[25:15] have the verbals and the non verbals reports that are just written down in
+[25:21] the terminal where you have exactly the same information here for example you
+[25:27] have a small error when it is not verbose and the verbose one says who
+[25:33] requires the thing at which version so tries to give more information to to be
+[25:39] able to fix it every time that will result so this is for example when you
+[25:46] inspect the resolution you can actually resolve just resolve the baseline
+[25:49] without loading it you get the findings with the report and you have also a graph
+[25:54] of the dependencies and here for example there is a top one and the yellow arrows means everything
+[26:01] is okay now where is the i will show you the so this is moose how mvs results moves and the red
+[26:12] one means there is something that is happening there and and the dashed it means that you have
+[26:20] two dependencies to the same thing so but yellow are warnings I think or I don't know I don't remember
+[26:28] so this is kind of the base thing and now the question is okay how do I use the stuff
+[26:36] for covering all the use cases that Martin wants
+[26:41] before people used to do this for example you can load first block and then you can
+[26:47] load top-lock. This is one way to do it. You load block and then you load top-lock and you say,
+[26:53] ah, if I want to upgrade, use the loaded one. Like that, it doesn't touch your version and so on.
+[27:00] And you can also lock it, for example, with MetaCello. Now what we have is that in MetaCello,
+[27:07] so first, for activating minimal version selection, you have to send the message mbs
+[27:11] to MetaCello and that activates MBS and then you can say all the baselines so
+[27:18] there's a new message I don't know if you see this third line doesn't have a
+[27:23] semicolon between the baseline repository so you can see my cursor so you can add
+[27:31] extra baselines to the load so here for example this will load baseline A at 1.0
+[27:39] and base on C 1.4 and that adds a new requirement so that means that locally
+[27:46] you can override you can increment the dependency you can bump it down but just
+[27:53] locally which is okay because like that you don't break everybody else for
+[27:56] example this CI would do that I will show you how Toplo is doing it
+[28:01] I need a pull request to stop load this morning.
+[28:05] But yes, we can do that.
+[28:08] So this is an upgrade, but it's from the user point of view.
+[28:13] And you don't touch anybody's baseline,
+[28:14] which is actually one of the things I want.
+[28:16] I want people to don't touch the baseline anymore.
+[28:18] Exactly, because that's always the annoying thing.
+[28:21] So then people build these tools
+[28:22] that were touching the baseline for every CI run
+[28:25] and all these things.
+[28:26] Yeah, actually the worst thing is that, for example,
+[28:27] now Martin develops with the baseline
+[28:30] that are pointing to branches.
+[28:32] Every time that he wants to release,
+[28:33] he needs to fix the baseline to mark,
+[28:37] to make them point to tags.
+[28:40] And once he does the release,
+[28:41] he has to put back the baseline, the branches.
+[28:44] So he can develop normally.
+[28:48] Which is a lot of noise.
+[28:49] I do the same for microdown and pillar.
+[28:52] So, so another way to do it is with locking.
+[28:56] Now, the other thing that I propose is that you can use this override mechanism to actually say,
+[29:09] okay, here you can use, for this load, you can use the version C at this branch.
+[29:14] So you can locally say, okay, here I'm going to use block main branch, only for this load.
+[29:20] like that you don't touch the baseline but locally you are actually controlling
+[29:25] what is the things that you want to develop so for example blog toplo
+[29:30] depends on blog album and it's hungry
+[29:35] I'll be a block I'll make some green and we have to we have a list for what an
+[29:41] XML something for the video yes and so the question is when you develop in
+[29:48] in Toplo. Do you want to edit Block and Toplo or Block and Toplo and Alexandrie? And there was
+[29:53] album too. Or do you want to have in Bleeding Edge Block, Toplo, Alexandrie and album? Do you want to
+[30:00] put also the XML in development? So do you want to the latest branch of that one too? So the thing
+[30:06] is that managing the limits of what is your development environment depends on the developer.
+[30:14] And on the quality of the parceling out the packages. Often it's like yeah I would like to
+[30:18] to only develop block, but in practice it doesn't work because...
+[30:22] Yes.
+[30:24] So with this, you can locally decide,
+[30:26] ah, I want you to override block by this version,
+[30:30] and then, but the baseline is still the stable baseline
+[30:34] that is reproducible.
+[30:36] Now, I did run the MBS on what?
+[30:41] run the MBS on what on top low browser spec new tools micro down pillar yes
+[30:53] I very said moves so I did many many projects right so actually most of the
+[30:59] warnings are things that I started finding when doing this on seaside I
+[31:05] I did see Twitter bootstrap 4, Twitter bootstrap 5,
+[31:08] material design lights.
+[31:11] And I started gathering, okay, this I wanted to run,
+[31:14] maybe this we can keep compatibility and so on.
+[31:17] So for example, Doppler right now it works.
+[31:20] If you load version, actually if you load version 0.11,
+[31:24] it works.
+[31:25] So it has a couple of warnings, but it's okay.
+[31:28] It can load in Faro 15, clean.
+[31:30] Moons has at least by the default release with this MBS is failing because their baseline
+[31:40] it is sometimes finding all the versions that don't load anymore it tries to fetch groups
+[31:45] that are not declared it tries to because for example if you create a new when you use a floating
+[31:56] tag, 1.x.dx, it means that you are compatible with any one version. But what happens if
+[32:04] the version 1.3 added a group? And now you depend on that group. Actually you don't depend
+[32:09] on any 1.x, you depend on 1.4 or main or bigger. But 1.4 and less than 1.4 you are not compatible
+[32:17] anymore because you are depending on a new feature. So that is why the group non-declarer
+[32:22] are failing.
+[32:25] Yeah, but .x.x
+[32:26] is equivalent to the highest version.
+[32:31] 1.x.x means
+[32:32] any one. x is any x.
+[32:35] Sorry, x means x bigger
+[32:36] than 0. The way we are
+[32:38] managing is that
+[32:40] each time we create a new release,
+[32:42] x is the highest. I know how it
+[32:44] works, but semantically
+[32:46] it doesn't make sense, because
+[32:48] if I read it as a semantic version,
+[32:50] it's wrong. So maybe
+[32:52] right now there are many dependencies that say I depend on 1.x.x where it
+[32:56] should say I depend on 1.4.x where 1.4.x is the biggest than 1.4 I don't know
+[33:04] yeah but for us it's equivalent because x will always be the highest
+[33:08] yes but and there are cases where it's not so I found a lot of bugs where
+[33:17] actually the latest version and the tags were not in fame or I don't know but
+[33:24] anyway the point is I want that to be done automatically nobody should be
+[33:29] touching tags anymore I'm bumping tags and making error silly mistakes because
+[33:35] the thing is the infrastructure is bad so okay these are concrete things from
+[33:45] I don't care.
+[33:48] Now, how should this work for top-load and block?
+[33:51] Like, for example, here you can use metachelo new MBS,
+[33:54] and then you can load top-load like this.
+[33:56] So where you say, oh, OK, I want top-load, dev branch.
+[33:58] I want block, master branch.
+[34:00] I want album, master branch, and so on.
+[34:06] And this, load, because you are overwriting all the dependencies.
+[34:10] So then it works.
+[34:14] We can do the same from the command line.
+[34:16] So we metachill install, you say mvs,
+[34:19] and then you have this dash dash dev,
+[34:21] and it works the same thing as before.
+[34:28] I did it on the CI, we show you the pull request.
+[34:34] And I will show you how Toplo is doing.
+[34:36] I don't care, and I did it for many other ones.
+[34:39] I don't care.
+[34:40] So how does it look like?
+[34:43] So it's this pull request that is closed,
+[34:45] it is open yet, still.
+[34:50] So what I did is I added a new here.
+[34:55] Can you see my screen?
+[34:57] Yes.
+[34:58] Okay, so it has a GitHub action that has two new jobs.
+[35:04] They are called Dev and Integration.
+[35:06] The names are bad, but you can choose your name that you want.
+[35:11] We can change it, it's not a problem.
+[35:13] and the dev job what it does is you will just load top-load the latest of this
+[35:21] so here we are in the top-load repository yes so you will take the
+[35:25] latest commit of the current branch and it will build that against the fixed so
+[35:30] one of the things first I need to say this this will request changes the the
+[35:37] baseline to point to fixed commons, fixed versions.
+[35:42] So it says Toplo depends on block 3 and on album 011.
+[35:48] And here we say, OK, I want to the first, where is it?
+[35:53] Let me check.
+[35:55] Here.
+[35:55] This dev build, it will load Toplo, the latest commit,
+[36:01] but it will respect the dependencies.
+[36:03] That means that it will load the latest commit of Toplo
+[36:06] with block 3 and album 011.
+[36:10] The integration job, so that means that now every time
+[36:12] that you commit you will have two jobs that are running
+[36:15] in parallel.
+[36:16] The integration job, it will load top-lock,
+[36:18] the latest commit, but it also will load block
+[36:22] the latest commit, and album the latest commit,
+[36:24] and xandree the latest commit, and xml parser the latest.
+[36:27] Actually, not even the latest commit.
+[36:29] Here it is just loading a fixed version.
+[36:32] Because otherwise it doesn't work because block tries
+[36:35] load it's a little parcel master and that doesn't work and this actually kind
+[36:45] of that's the same thing as having the dependency to the branch except that you
+[36:50] are shut the base and you don't touch it anymore you you're really on this yes
+[36:54] and you can control exactly what so here this you can control the boundary you
+[37:00] can even choose two different boundaries like here you have two jobs that are
+[37:04] testing block in two different scenarios in the sense of reproducible builds because this one this
+[37:14] is a refor dev so this one is for development this is what Martin wanted yeah but if you if
+[37:20] you have something that you say oh I want to be able to rip your cues oh in that case you remove
+[37:26] dev but yeah you don't use the dev and you you just if you use mcs by default mcs by default mcs
+[37:35] is only using tags version numbers okay so that means that the versions can come from other places
+[37:42] that are in deployment you would always use version numbers yes always yes always you don't think
+[37:47] this is purely for development like i want to have an image for me that i don't look every morning
+[37:51] Yes, exactly. It covers kind of this scenario.
+[37:57] And for me I have exactly this scenario in Pilar and microdown.
+[38:05] I don't even know what Nobhat is now doing with the huge Active Grid project, but he was,
+[38:11] I think he was hard coding the commits in what he loads because he wanted to make sure that he loads everything without having to put tags everywhere all the time.
+[38:24] Which I guess is a bit similar to what Fank is doing.
+[38:31] So here still you need to make a release, you need to tag...
+[38:36] But this means that after we can have something that says...
+[38:40] So on the other end, you need a tool for that.
+[38:42] The question is if the tool hardcodes git hashes
+[38:48] or if it creates version numbers,
+[38:51] there's not a huge difference.
+[38:52] I mean, it's anyway something that needs to generate stuff.
+[38:55] Well, here one of the things,
+[38:57] to do some numbers here.
+[39:01] So we already have, for example,
+[39:06] in the info, where is the info?
+[39:08] So here for example, in the report you have,
+[39:13] you could have used C1.4 instead of 1.2 in B.
+[39:17] So once you have that information,
+[39:19] you can write it with that .
+[39:20] Exactly, and this is something that
+[39:23] if you hard code the git hashes,
+[39:26] that information you never get.
+[39:27] You don't know what is the next possible version.
+[39:29] The next possible stable version.
+[39:31] The next possible stable version.
+[39:32] That is for a distributed project,
+[39:34] something really valuable to know.
+[39:36] Yes.
+[39:38] so so things that right now are not so what are the points of this so
+[39:45] reproducible builds this is something that can still be improved but most of
+[39:51] the things are decided before loading any code so the baselines are not loaded
+[39:56] at least not in the new MPS in the old resolver they are still loaded but we
+[40:01] can't remove that so there's a new step in the resolution that we can actually
+[40:06] call explicitly and say MetaCherro resolve and it will show you the resolution and I made it so that
+[40:12] MetaCherro doesn't know anything about git so then knows nothing about branches or commits it
+[40:17] knows about versions so that's it so does this project have versions if it has versions give
+[40:23] me the num give me the version numbers and then you can decide I mean they need to be semantic
+[40:28] version.
+[40:31] So it does not require you...
+[40:34] No, that means that we can plug for example other sources of versions that are...
+[40:38] Yeah, exactly. That's a good thing to have.
+[40:41] And something that was fun is that, as I told you, I run this on spec, on iceberg, on everything,
+[40:49] and we did recordings of those so we can actually replay that without actually network.
+[40:54] So that is something...
+[40:56] That is nice.
+[40:57] I think that I didn't do because that needs more complex decisions and I don't like any of the solutions.
+[41:08] If you have something that is loaded in the image and you have a conflict with that, what happens?
+[41:13] Because the upgrade is dangerous. Or the downgrade is very dangerous.
+[41:17] So if it is XML, as soon as XML is not used, it's okay.
+[41:22] But if you try to do it with block, it will not work anymore.
+[41:26] Especially if you have something that has lots of dependencies in the image already, what do you mean?
+[41:30] Yes, you can create something that was used by somebody else.
+[41:34] Or that is even used by the tool itself to render what you are looking at right now.
+[41:38] Yeah.
+[41:39] Or that has announcement registered.
+[41:42] Yeah. You see fireworks.
+[41:45] But so now what I decided, I decided to be conservative,
+[41:49] I said okay, if I find these cases, it doesn't load anything.
+[41:54] better start from a clean image sometimes what happens if you loaded
+[42:02] something that is not in conflict but then you edit it so you you go and touch
+[42:07] the code should the thing override the code or not so yeah I didn't check it
+[42:17] too much but I didn't want to do a magical automatic thing for that again
+[42:26] because what should we do should we overwrite the code that you wrote my
+[42:30] hand or should we make an error error is probably the commit release yeah exactly
+[42:38] you should always have a same stage when you do updates so maybe one of the
+[42:42] solutions will be to for everything that is loaded you can manually add it as
+[42:46] dependencies or maybe they can automatically be added as dependencies and then it uses what is in
+[42:53] the image never but then you you get a warning and then after you get the resolution with git
+[42:59] with iceberg in case but you can get in that case you can get the warning so in any case if you try
+[43:04] if you do the override from the outside it's still it's also dangerous because you ah i can say ah
+[43:12] Toplow 1.3, I will load that, but with this new version of block.
+[43:16] Who knows if that is compatible and if that works now?
+[43:20] So it's always a chance.
+[43:24] So if you try to load the branch, can it override the static code?
+[43:29] So all the conflicts with the image, the image has great conflicts.
+[43:33] So I left them outside.
+[43:37] Also, I think if you try to get the same project from two repositories,
+[43:40] like somebody tries to log thank block and block from the other one what happens
+[43:45] of course they are not even if they have tags with the same name they are
+[43:50] probably not the same version and so some people did that in the past that
+[43:57] they said I will copy all all projects because I don't know what the original
+[44:02] author will do is it mr. github repository so I want to make sure that I
+[44:06] I load only from github sources that I control yes well you can do that and you
+[44:13] have you can do over right so we need to upgrade it for now touching the
+[44:29] baseline, at least if you use MBS.
+[44:32] If you don't use MBS, you can use the old meta-channel.
+[44:34] It will work as before.
+[44:35] Oh, yeah.
+[44:38] But I will show you here.
+[44:44] Let's see what happens if I do it for just live demo.
+[44:48] Like that it fades.
+[44:49] I will do Moose MBS.
+[44:52] Let's inspect.
+[44:54] So I just did the resolution.
+[44:55] I didn't do a lot.
+[44:57] You see, so it's fast because it was already cloned.
+[45:01] So you have the dependencies, and you have findings.
+[45:05] So here, for example, it is trying to load a node baseline
+[45:10] that depends on our package organizer.
+[45:14] Here.
+[45:14] It's in famix queries that is being asked by moose ID.
+[45:21] Then there are dependencies on groups that are not declared.
+[45:24] hash table, iterators, three queries.
+[45:29] There are dependencies on talents without version numbers,
+[45:36] fame, famix, label contractor,
+[45:38] hierarchical visualization as by then care units.
+[45:43] For the missing groups, this is real
+[45:47] because we are loading it and it loads.
+[45:50] No, because I have, you always go to the
+[45:54] the latest. This assumes the other way. Unless you say otherwise, it is the lowest. And that
+[46:03] is part of the discussion of, are you really compatible with all the 1.x.x? Because you
+[46:09] are giving it a, I understand that you are giving it a different semantic, but from a
+[46:16] semantic version point of view, it means 1.x.x is all the 1.x.x, whatever. And this is assuming
+[46:23] that. 1.8.6 is all the ones. And this is not the case.
+[46:27] Our way to do it was it's the latest one.
+[46:31] So we could introduce a group in 1.3.4
+[46:35] and consider that we will have the group because since
+[46:39] the .4 is released we will never go back to the 1, 2, 3.
+[46:43] Oh yeah. Yes? So you have all
+[46:47] these errors then, let's see this one. So there are
+[46:51] People that is depending on small stock, system version,
+[46:57] small stock class name, environment,
+[47:00] probably self class environment, blah, blah, blah.
+[47:02] But I'm not sure who's our warnings,
+[47:05] because to define custom attributes,
+[47:09] maybe not the system versions, but the .
+[47:12] These are not.
+[47:14] I don't know if this is custom attributes or whatever.
+[47:17] because this is either for most of them in the custom attributes or in postcloud
+[47:23] could be but for now so that's why I didn't put them in errors also but the question is
+[47:31] if you have a version that will have a different resolution in different images
+[47:37] How does it work?
+[47:41] That is not reproducible.
+[47:42] You see?
+[47:44] I don't know how to solve that yet.
+[47:46] I left it open so that it's compatible for now.
+[47:49] So here you have, okay, some baseline that depends on
+[47:54] Faro 10, Faro 9, who knows if that works.
+[47:59] Baseline uses an API remove from Faro.
+[48:01] Okay, here's the package repository.
+[48:04] and here for example here you have famix replication 1.1.6 ask for tiny logger 1.6
+[48:12] but there's a new major maybe you won't update but that needs to be tested you
+[48:18] cannot just upgrade manually without testing so one of the things that I go
+[48:24] with this pull request is not only these two jobs there is one job that runs once
+[48:30] every week and you will look at the upgrades that you can do and it will
+[48:35] open issue is it and you say you want maybe you want to upgrade to this new
+[48:41] version so it's less interesting than going touching the thing and also
+[48:49] touching the thing is not so easy because it's easy if everybody coded
+[48:53] like it was a declarative thing but as soon as people start coding inside the
+[48:57] baseline it's impossible to actually find and replace text
+[49:06] no opening issues is a good I mean telling people what they can do actively
+[49:14] is a nice thing that we should use more yes so and the other thing that it's not
+[49:21] integrated yet but as soon as this is integrated in Toplo every time that
+[49:27] somebody commits you get the report of MetaCello in the request with all the
+[49:35] errors and warnings
+[49:51] for graphics
+[49:56] maybe one of these days we need one
+[49:59] yes
+[50:01] 0-11 okay i remove the source
+[50:05] okay so this is top-lock
+[50:07] you see top-lock i i cannot drag because it is a different but top-lock depends on album and it depends on block
+[50:13] album also depends on block so here you have a
+[50:17] It's not that it's redundant because Topplot depends on block.
+[50:21] It's not redundant.
+[50:23] Because if at some point Album does not have block anymore in its dependencies, Topplot...
+[50:29] Still depends on block, exactly.
+[50:31] But so, and these are the... so it has just a couple of warnings.
+[50:37] And some, you see, maybe block should use the latest releases of XML parser.
+[50:45] I know, it's the XML parser that uses floating stuff.
+[50:51] Yeah.
+[50:51] I'm here, I'm already selected.
+[50:54] Any task path?
+[50:56] For order preserving dictionary,
+[50:58] there's order dictionary too in the image.
+[51:00] We should really think about what to do.
+[51:03] And also maybe with this,
+[51:06] we should deprecate a feature in Metasello
+[51:09] that anyway does not really work,
+[51:12] is that you can write, for example,
+[51:14] v1.questionmark and it's supposed to load
+[51:19] the highest minor version, but that does not work
+[51:23] because it's lazy, so it does a GitHub request
+[51:28] each time it calls the getter and we hit the API
+[51:32] and it's the reason I introduced .x.x tags.
+[51:37] It's exactly the same but not requiring each time.
+[51:42] In all the examples that I found, in all the projects that I checked, nobody is using the question mark because it doesn't work.
+[51:51] So I'm not covering it in the warning.
+[51:55] So the reason I think is that with what you are doing, we could deprecate it.
+[52:00] And the other thing is that if we have, for example, the catalog, where for each package
+[52:06] we can know the versions that are available without going to Git, or we can actually make
+[52:11] this work without Iceberg, just loading some zip files and some metadata in JSON or whatever.
+[52:20] And we can implement, so we can detach this entirely from Iceberg.
+[52:22] Right now what it is doing, it is asking the repository, give me your versions.
+[52:28] Iceberg says I'll give you my tags.
+[52:30] And then Monticello...
+[52:32] We should actually in long term think about actually not having the where we load stuff from independent of GitHub.
+[52:40] Because these are two different things.
+[52:42] One is source revision control and the other one is database of code to load.
+[52:46] And they are two different things.
+[52:48] Just to give you an idea.
+[52:50] Recompiling the entire block takes what three seconds we measure there four seconds.
+[52:56] so loading block takes a lot of time

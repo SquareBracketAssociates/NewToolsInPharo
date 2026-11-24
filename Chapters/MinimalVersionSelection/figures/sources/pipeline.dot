@@ -1,0 +1,20 @@
+digraph G { rankdir=LR; bgcolor=white; nodesep=0.28; ranksep=0.55; pad=0.12; fontname="Helvetica"; fontsize=12;
+node [shape=box style="rounded,filled" fillcolor=white fontname="Helvetica" fontsize=13 height=0.36 margin="0.14,0.05" color="#555555"];
+edge [color="#555555" arrowsize=0.7 fontname="Helvetica" fontsize=11];
+subgraph cluster_n { label="Now"; labeljust=l; color="#BBBBBB"; style=rounded; margin=12;
+n0 [label="resolve\nchoose one version\nof every project" fillcolor="#FFD9A8" color="#C05A00" penwidth=2];
+n1 [label="record\nbuild the plan" ];
+n2 [label="fetch\ndownload packages" ];
+n3 [label="load\ninto the image" ];
+n0->n1;
+n1->n2;
+n2->n3;
+}
+subgraph cluster_b { label="Before"; labeljust=l; color="#BBBBBB"; style=rounded; margin=12;
+b0 [label="record\nbuild the plan and\nchoose versions on the way" fillcolor="#F8C9C4" color="#B3261E" penwidth=2];
+b1 [label="fetch\ndownload packages" ];
+b2 [label="load\ninto the image" ];
+b0->b1;
+b1->b2;
+}
+}
